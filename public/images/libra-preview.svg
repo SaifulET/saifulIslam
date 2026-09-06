@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fdfbfd"/>
+      <stop offset="100%" stop-color="#f4eff8"/>
+    </linearGradient>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.08"/>
+    </filter>
+    <linearGradient id="hobbitCover" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2c3e50"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+    <linearGradient id="wrightCover" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7f8c8d"/>
+      <stop offset="100%" stop-color="#2c3e50"/>
+    </linearGradient>
+    <linearGradient id="sapiensCover" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f5e6d3"/>
+    </linearGradient>
+    <linearGradient id="gunsCover" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d35400"/>
+      <stop offset="100%" stop-color="#7d3c98"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Window Container -->
+  <rect width="900" height="600" rx="16" fill="url(#bgGrad)" stroke="#dcd6e8" stroke-width="2"/>
+
+  <!-- Top Nav Bar -->
+  <g transform="translate(300, 24)">
+    <rect width="300" height="40" rx="10" fill="#ffffff" stroke="#c084fc" stroke-width="1.5" filter="url(#cardShadow)"/>
+    <text x="50" y="25" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#7e22ce" text-anchor="middle">📖 All Books</text>
+    <text x="150" y="25" font-family="system-ui, sans-serif" font-size="12" font-weight="500" fill="#64748b" text-anchor="middle">➕ Add Book</text>
+    <text x="240" y="25" font-family="system-ui, sans-serif" font-size="12" font-weight="500" fill="#64748b" text-anchor="middle">📊 Borrow Summary</text>
+  </g>
+
+  <!-- Title & Subtitle -->
+  <g transform="translate(450, 110)" text-anchor="middle">
+    <!-- Glow pill -->
+    <rect x="-110" y="-28" width="220" height="38" rx="8" fill="#f3e8ff" opacity="0.9"/>
+    <text x="0" y="-3" font-family="system-ui, sans-serif" font-size="28" font-weight="900" fill="#1e1b4b">Manage &amp; Explore</text>
+    <text x="0" y="24" font-family="system-ui, sans-serif" font-size="12" fill="#64748b">Easily manage your library books, track inventory, and borrow titles all from one simple, responsive interface.</text>
+  </g>
+
+  <!-- Search & Filter Controls -->
+  <g transform="translate(60, 160)">
+    <!-- Search Box -->
+    <rect width="220" height="36" rx="8" fill="#ffffff" stroke="#c084fc" stroke-width="1.5"/>
+    <text x="35" y="23" font-family="system-ui, sans-serif" font-size="13" fill="#94a3b8">🔍 SEARCH...</text>
+
+    <!-- Sort Dropdown -->
+    <g transform="translate(620, 0)">
+      <rect width="160" height="36" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1"/>
+      <text x="20" y="23" font-family="system-ui, sans-serif" font-size="12" fill="#475569">Copies (Low to High) ▾</text>
+    </g>
+  </g>
+
+  <!-- Book Cards Grid -->
+  <!-- CARD 1: The Hobbit -->
+  <g transform="translate(60, 215)" filter="url(#cardShadow)">
+    <rect width="175" height="320" rx="10" fill="#e9d5ff" stroke="#a855f7" stroke-width="1.5"/>
+    <!-- Book Thumbnail -->
+    <rect x="12" y="12" width="151" height="150" rx="6" fill="url(#hobbitCover)"/>
+    <text x="87" y="90" font-family="serif" font-size="18" font-weight="bold" fill="#facc15" text-anchor="middle">The Hobbit</text>
+    <!-- Details -->
+    <text x="14" y="180" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#1e1b4b">The Hobbit</text>
+    <text x="14" y="198" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Author: J.R.R. Tolkien</text>
+    <text x="14" y="214" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Genre: NON-FICTION</text>
+    <text x="14" y="230" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Copies: 13</text>
+    <rect x="110" y="218" width="52" height="18" rx="4" fill="#22c55e"/>
+    <text x="136" y="231" font-family="system-ui, sans-serif" font-size="9" font-weight="bold" fill="#ffffff" text-anchor="middle">Available</text>
+    <!-- Buttons -->
+    <g transform="translate(14, 252)">
+      <rect width="68" height="28" rx="6" fill="#9333ea"/>
+      <text x="34" y="18" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">Borrow</text>
+      <rect x="74" width="68" height="28" rx="6" fill="#3b82f6"/>
+      <text x="108" y="18" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">Details</text>
+    </g>
+  </g>
+
+  <!-- CARD 2: The Wright Brothers -->
+  <g transform="translate(260, 215)" filter="url(#cardShadow)">
+    <rect width="175" height="320" rx="10" fill="#e9d5ff" stroke="#a855f7" stroke-width="1.5"/>
+    <rect x="12" y="12" width="151" height="150" rx="6" fill="url(#wrightCover)"/>
+    <text x="87" y="85" font-family="serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">THE WRIGHT</text>
+    <text x="87" y="105" font-family="serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">BROTHERS</text>
+    <text x="14" y="180" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#1e1b4b">The Wright Brothers</text>
+    <text x="14" y="198" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Author: David McCullough</text>
+    <text x="14" y="214" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Genre: HISTORY</text>
+    <text x="14" y="230" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Copies: 1</text>
+    <rect x="110" y="218" width="52" height="18" rx="4" fill="#22c55e"/>
+    <text x="136" y="231" font-family="system-ui, sans-serif" font-size="9" font-weight="bold" fill="#ffffff" text-anchor="middle">Available</text>
+    <g transform="translate(14, 252)">
+      <rect width="68" height="28" rx="6" fill="#9333ea"/>
+      <text x="34" y="18" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">Borrow</text>
+      <rect x="74" width="68" height="28" rx="6" fill="#3b82f6"/>
+      <text x="108" y="18" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">Details</text>
+    </g>
+  </g>
+
+  <!-- CARD 3: Sapiens -->
+  <g transform="translate(460, 215)" filter="url(#cardShadow)">
+    <rect width="175" height="320" rx="10" fill="#e9d5ff" stroke="#a855f7" stroke-width="1.5"/>
+    <rect x="12" y="12" width="151" height="150" rx="6" fill="url(#sapiensCover)"/>
+    <text x="87" y="70" font-family="serif" font-size="20" font-weight="bold" fill="#dc2626" text-anchor="middle">Sapiens</text>
+    <text x="87" y="110" font-family="serif" font-size="10" fill="#475569" text-anchor="middle">A Brief History of Humankind</text>
+    <text x="14" y="180" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#1e1b4b">Sapiens</text>
+    <text x="14" y="198" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Author: Yuval Noah Harari</text>
+    <text x="14" y="214" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Genre: NON-FICTION</text>
+    <text x="14" y="230" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Copies: 5</text>
+    <rect x="110" y="218" width="52" height="18" rx="4" fill="#22c55e"/>
+    <text x="136" y="231" font-family="system-ui, sans-serif" font-size="9" font-weight="bold" fill="#ffffff" text-anchor="middle">Available</text>
+    <g transform="translate(14, 252)">
+      <rect width="68" height="28" rx="6" fill="#9333ea"/>
+      <text x="34" y="18" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">Borrow</text>
+      <rect x="74" width="68" height="28" rx="6" fill="#3b82f6"/>
+      <text x="108" y="18" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">Details</text>
+    </g>
+  </g>
+
+  <!-- CARD 4: Guns, Germs, and Steel -->
+  <g transform="translate(660, 215)" filter="url(#cardShadow)">
+    <rect width="175" height="320" rx="10" fill="#e9d5ff" stroke="#a855f7" stroke-width="1.5"/>
+    <rect x="12" y="12" width="151" height="150" rx="6" fill="url(#gunsCover)"/>
+    <text x="87" y="80" font-family="serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">GUNS, GERMS,</text>
+    <text x="87" y="100" font-family="serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">&amp; STEEL</text>
+    <text x="14" y="180" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#1e1b4b">Guns, Germs, &amp; Steel</text>
+    <text x="14" y="198" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Author: Jared Diamond</text>
+    <text x="14" y="214" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Genre: HISTORY</text>
+    <text x="14" y="230" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Copies: 20</text>
+    <rect x="110" y="218" width="52" height="18" rx="4" fill="#22c55e"/>
+    <text x="136" y="231" font-family="system-ui, sans-serif" font-size="9" font-weight="bold" fill="#ffffff" text-anchor="middle">Available</text>
+    <g transform="translate(14, 252)">
+      <rect width="68" height="28" rx="6" fill="#9333ea"/>
+      <text x="34" y="18" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">Borrow</text>
+      <rect x="74" width="68" height="28" rx="6" fill="#3b82f6"/>
+      <text x="108" y="18" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">Details</text>
+    </g>
+  </g>
+</svg>
