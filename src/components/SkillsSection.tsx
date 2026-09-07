@@ -14,41 +14,15 @@ export interface SkillItem {
   order?: number;
 }
 
-const DEFAULT_SKILLS: SkillItem[] = [
-  // FRONTEND (7)
-  { name: "HTML", category: "frontend", borderColor: "#e44d26", textColor: "#e44d26", iconPath: "/icons/text.png" },
-  { name: "CSS", category: "frontend", borderColor: "#1572b6", textColor: "#38bdf8", iconPath: "/icons/css-file.png" },
-  { name: "JavaScript", category: "frontend", borderColor: "#f7df1e", textColor: "#facc15", iconPath: "/icons/JavaScript.svg" },
-  { name: "Tailwind CSS", category: "frontend", borderColor: "#06b6d4", textColor: "#22d3ee", iconPath: "/icons/Tailwind CSS.svg" },
-  { name: "Next.js", category: "frontend", borderColor: "#ffffff", textColor: "#ffffff", iconPath: "/icons/nextjs.svg" },
-  { name: "Redux", category: "frontend", borderColor: "#764abc", textColor: "#c084fc", iconPath: "/icons/Redux.svg" },
-  { name: "Zustand", category: "frontend", borderColor: "#d97706", textColor: "#fbbf24", iconPath: "/icons/zustend.png" },
-
-  // BACKEND (7)
-  { name: "Node.js", category: "backend", borderColor: "#22c55e", textColor: "#4ade80", iconPath: "/icons/nodejs.png" },
-  { name: "Express.js", category: "backend", borderColor: "#cbd5e1", textColor: "#e2e8f0", iconPath: "/icons/expressjs.png" },
-  { name: "C++", category: "backend", borderColor: "#00599c", textColor: "#60a5fa", iconPath: "/icons/C++ (CPlusPlus).svg" },
-  { name: "MongoDB", category: "backend", borderColor: "#13aa52", textColor: "#34d399", iconPath: "/icons/MongoDB.svg" },
-  { name: "Redis", category: "backend", borderColor: "#dc2626", textColor: "#ef4444", iconPath: "/icons/Redis.svg" },
-  { name: "RabbitMQ", category: "backend", borderColor: "#ff6600", textColor: "#fb923c", iconPath: "/icons/RabbitMQ.svg" },
-  { name: "Database", category: "backend", borderColor: "#3b82f6", textColor: "#60a5fa", iconPath: "/icons/database.png" },
-
-  // TOOLS (4)
-  { name: "Git", category: "tools", borderColor: "#f05032", textColor: "#f87171", iconPath: "/icons/Git.svg" },
-  { name: "Docker", category: "tools", borderColor: "#0db7ed", textColor: "#38bdf8", iconPath: "/icons/social.png" },
-  { name: "AWS", category: "tools", borderColor: "#ff9900", textColor: "#fbbf24", iconPath: "/icons/AWS.svg" },
-  { name: "Postman", category: "tools", borderColor: "#ff6c37", textColor: "#fb923c", iconPath: "/icons/Postman.svg" },
-];
-
 export default function SkillsSection({ initialSkills }: { initialSkills?: SkillItem[] }) {
-  const [skills, setSkills] = useState<SkillItem[]>(initialSkills || DEFAULT_SKILLS);
+  const [skills, setSkills] = useState<SkillItem[]>(initialSkills || []);
   const [activeTab, setActiveTab] = useState<"all" | "frontend" | "backend" | "tools">("all");
 
   useEffect(() => {
     fetch("/api/skills")
       .then((res) => res.json())
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           setSkills(data);
         }
       })
@@ -67,10 +41,10 @@ export default function SkillsSection({ initialSkills }: { initialSkills?: Skill
   ];
 
   return (
-    <section id="skills" className="relative py-20 pb-28 sm:pb-20 scroll-mt-20 bg-[#070612] text-white border-b border-zinc-800/80 overflow-hidden select-none">
+    <section id="skills" className="relative py-20 pb-28 sm:pb-20 scroll-mt-20 bg-slate-50 dark:bg-[#070612] text-slate-900 dark:text-white border-b border-slate-200 dark:border-zinc-800/80 overflow-hidden select-none transition-colors duration-300">
 
       {/* VINTAGE CODE MATRIX BACKGROUND */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.06] font-mono text-[11px] leading-relaxed select-none overflow-hidden text-emerald-400">
+      <div className="absolute inset-0 pointer-events-none opacity-[0.04] dark:opacity-[0.06] font-mono text-[11px] leading-relaxed select-none overflow-hidden text-emerald-600 dark:text-emerald-400">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 p-6">
           <pre>{`void ClearPal() {
   int entry;
@@ -114,9 +88,9 @@ switch(charmingtaker) {
 
         {/* SECTION HEADER: LUCIDE CPU ICON + SKILLS */}
         <div className="flex items-center justify-center mb-10">
-          <div className="flex items-center gap-3 text-2xl sm:text-3xl font-extrabold tracking-wider text-white uppercase">
-            <Cpu className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-wider uppercase">
+          <div className="flex items-center gap-3 text-2xl sm:text-3xl font-extrabold tracking-wider text-slate-900 dark:text-white uppercase">
+            <Cpu className="w-7 h-7 sm:w-8 sm:h-8 text-slate-900 dark:text-white" />
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-wider uppercase">
               SKILLS
             </h2>
           </div>
@@ -124,27 +98,25 @@ switch(charmingtaker) {
 
         {/* INTERACTIVE CATEGORY FILTER TABS: Strictly One Single Line Across All Screen Sizes */}
         <div className="flex justify-center mb-10 w-full px-1">
-          <div className="inline-flex flex-nowrap items-center justify-between sm:justify-center p-1 sm:p-1.5 rounded-2xl bg-zinc-950/90 border border-zinc-800/90 gap-1 sm:gap-1.5 max-w-full shadow-lg">
+          <div className="inline-flex flex-nowrap items-center justify-between sm:justify-center p-1 sm:p-1.5 rounded-2xl bg-slate-100 dark:bg-zinc-950/90 border border-slate-200 dark:border-zinc-800/90 gap-1 sm:gap-1.5 max-w-full shadow-lg">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-sm font-sans font-medium transition-all duration-200 border whitespace-nowrap shrink-0 ${
-                    isActive
-                      ? "bg-purple-950/80 text-purple-200 border-purple-500/80 font-bold shadow-sm"
-                      : "bg-transparent text-zinc-400 border-transparent hover:text-zinc-200 hover:bg-zinc-900/60"
-                  }`}
+                  className={`flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-sm font-sans font-medium transition-all duration-200 border whitespace-nowrap shrink-0 cursor-pointer ${isActive
+                      ? "bg-purple-100 dark:bg-purple-950/80 text-purple-900 dark:text-purple-200 border-purple-300 dark:border-purple-500/80 font-bold shadow-sm"
+                      : "bg-transparent text-slate-600 dark:text-zinc-400 border-transparent hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-200/60 dark:hover:bg-zinc-900/60"
+                    }`}
                 >
                   <span className="shrink-0">{tab.icon}</span>
                   <span>{tab.label}</span>
                   <span
-                    className={`text-[9px] sm:text-[11px] px-1 sm:px-2 py-0.5 rounded-full font-mono transition-colors shrink-0 ${
-                      isActive
-                        ? "bg-purple-900/90 text-purple-200 border border-purple-400/40"
-                        : "bg-zinc-900 text-zinc-400 border border-zinc-800"
-                    }`}
+                    className={`text-[9px] sm:text-[11px] px-1 sm:px-2 py-0.5 rounded-full font-mono transition-colors shrink-0 ${isActive
+                        ? "bg-purple-200 dark:bg-purple-900/90 text-purple-900 dark:text-purple-200 border border-purple-300 dark:border-purple-400/40"
+                        : "bg-slate-200 dark:bg-zinc-900 text-slate-700 dark:text-zinc-400 border border-slate-300 dark:border-zinc-800"
+                      }`}
                   >
                     {tab.count}
                   </span>
@@ -170,8 +142,8 @@ switch(charmingtaker) {
                 }}
               />
 
-              {/* Normal State Border: Subtle Clean Zinc-800 */}
-              <div className="absolute inset-0 rounded-2xl border border-zinc-800/80 group-hover:opacity-0 transition-opacity duration-300 pointer-events-none" />
+              {/* Normal State Border: Subtle Clean */}
+              <div className="absolute inset-0 rounded-2xl border border-slate-200 dark:border-zinc-800/80 group-hover:opacity-0 transition-opacity duration-300 pointer-events-none" />
 
               {/* Hover State Static Colored Border Track */}
               <div
@@ -182,7 +154,7 @@ switch(charmingtaker) {
               />
 
               {/* Inner Card Body */}
-              <div className="relative z-10 w-full h-full rounded-[calc(1rem-1.5px)] bg-[#0c0d16] p-3.5 sm:p-4 flex flex-col items-center justify-center gap-2">
+              <div className="relative z-10 w-full h-full rounded-[calc(1rem-1.5px)] bg-white dark:bg-[#0c0d16] p-3.5 sm:p-4 flex flex-col items-center justify-center gap-2">
                 {/* Icon loaded strictly from public folder */}
                 <div className="w-10 h-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 relative">
                   <Image
@@ -195,7 +167,7 @@ switch(charmingtaker) {
                 </div>
 
                 {/* Skill Name - Highlights with Brand Color on Hover */}
-                <span className="text-xs font-semibold tracking-wide font-sans text-center truncate w-full text-zinc-400 group-hover:text-white transition-colors duration-300">
+                <span className="text-xs font-semibold tracking-wide font-sans text-center truncate w-full text-slate-700 dark:text-zinc-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors duration-300">
                   <span className="group-hover:hidden">{skill.name}</span>
                   <span
                     className="hidden group-hover:inline font-bold"

@@ -22,11 +22,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const saved = localStorage.getItem("portfolio_theme") as Theme | null;
-    if (saved) {
-      setThemeState(saved);
-      document.documentElement.setAttribute("data-theme", saved);
+    const initialTheme = saved || "dark";
+    setThemeState(initialTheme);
+    document.documentElement.setAttribute("data-theme", initialTheme);
+    if (initialTheme === "light") {
+      document.documentElement.classList.add("light");
+      document.documentElement.classList.remove("dark");
     } else {
-      document.documentElement.setAttribute("data-theme", "dark");
+      document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("light");
     }
     setMounted(true);
   }, []);
@@ -35,6 +39,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setThemeState(newTheme);
     localStorage.setItem("portfolio_theme", newTheme);
     document.documentElement.setAttribute("data-theme", newTheme);
+    if (newTheme === "light") {
+      document.documentElement.classList.add("light");
+      document.documentElement.classList.remove("dark");
+    } else {
+      document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("light");
+    }
   };
 
   const toggleTheme = () => {
@@ -44,7 +55,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
-      <div className={mounted ? "" : "dark"}>{children}</div>
+      {children}
     </ThemeContext.Provider>
   );
 }

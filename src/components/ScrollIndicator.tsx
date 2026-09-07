@@ -30,7 +30,7 @@ export default function ScrollIndicator() {
       {/* VERTICAL SIDELINE PROGRESS TRACK (RIGHT EDGE) */}
       <div className="fixed right-0 top-0 bottom-0 z-40 w-1 pointer-events-none hidden sm:block bg-zinc-900/60">
         <div
-          className="w-full bg-gradient-to-b from-cyan-400 via-purple-500 to-pink-500 transition-all duration-150 shadow-[0_0_10px_rgba(168,85,247,0.8)]"
+          className="w-full bg-purple-600 transition-all duration-150"
           style={{ height: `${scrollPercentage}%` }}
         />
       </div>

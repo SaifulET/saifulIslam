@@ -1,16 +1,11 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import Education from "@/models/Education";
-import { seedDatabase } from "@/lib/seed";
 
 export async function GET() {
   try {
     await connectToDatabase();
-    let education = await Education.find().sort({ order: 1, createdAt: -1 });
-    if (education.length === 0) {
-      await seedDatabase();
-      education = await Education.find().sort({ order: 1, createdAt: -1 });
-    }
+    const education = await Education.find().sort({ order: 1, createdAt: -1 });
     return NextResponse.json(education);
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

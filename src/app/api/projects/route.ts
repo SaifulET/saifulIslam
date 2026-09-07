@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import Project from "@/models/Project";
-import { seedDatabase } from "@/lib/seed";
 
 export async function GET(req: Request) {
   try {
@@ -16,10 +15,6 @@ export async function GET(req: Request) {
     }
 
     let projects = await Project.find(query).sort({ order: 1, createdAt: -1 });
-    if (projects.length === 0) {
-      await seedDatabase();
-      projects = await Project.find(query).sort({ order: 1, createdAt: -1 });
-    }
 
     if (limitParam) {
       const limit = parseInt(limitParam, 10);

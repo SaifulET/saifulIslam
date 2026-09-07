@@ -5,10 +5,10 @@ import Image from "next/image";
 
 // Canonical mapping of technology names to local SVG/PNG icon paths
 const ICON_MAP: Record<string, { path: string; label: string }> = {
-  html: { path: "/icons/html.svg", label: "HTML5" },
-  html5: { path: "/icons/html.svg", label: "HTML5" },
-  css: { path: "/icons/css.svg", label: "CSS3" },
-  css3: { path: "/icons/css.svg", label: "CSS3" },
+  html: { path: "/icons/html.png", label: "HTML5" },
+  html5: { path: "/icons/html.png", label: "HTML5" },
+  css: { path: "/icons/css-file.png", label: "CSS3" },
+  css3: { path: "/icons/css-file.png", label: "CSS3" },
   tailwind: { path: "/icons/Tailwind CSS.svg", label: "Tailwind CSS" },
   tailwindcss: { path: "/icons/Tailwind CSS.svg", label: "Tailwind CSS" },
   typescript: { path: "/icons/typescript.svg", label: "TypeScript" },
@@ -21,8 +21,10 @@ const ICON_MAP: Record<string, { path: string; label: string }> = {
   zustand: { path: "/icons/zustend.png", label: "Zustand" },
   nodejs: { path: "/icons/nodejs.png", label: "Node.js" },
   node: { path: "/icons/nodejs.png", label: "Node.js" },
-  express: { path: "/icons/express.svg", label: "Express.js" },
-  expressjs: { path: "/icons/expressjs.png", label: "Express.js" },
+  ex: { path: "/icons/express.png", label: "Express.js" },
+  express: { path: "/icons/express.png", label: "Express.js" },
+  expressjs: { path: "/icons/express.png", label: "Express.js" },
+  "express.js": { path: "/icons/express.png", label: "Express.js" },
   mongodb: { path: "/icons/MongoDB.svg", label: "MongoDB" },
   mongo: { path: "/icons/MongoDB.svg", label: "MongoDB" },
   jwt: { path: "/icons/jwt.svg", label: "JWT" },
@@ -35,6 +37,10 @@ const ICON_MAP: Record<string, { path: string; label: string }> = {
   git: { path: "/icons/Git.svg", label: "Git" },
   postman: { path: "/icons/Postman.svg", label: "Postman" },
   database: { path: "/icons/database.png", label: "Database" },
+  ai: { path: "/icons/ai.png", label: "AI / ML" },
+  social: { path: "/icons/social.png", label: "Social Media API" },
+  "data-management": { path: "/icons/data-management.png", label: "Data Management" },
+  digital: { path: "/icons/digital.png", label: "Digital Platform" },
   cpp: { path: "/icons/C++ (CPlusPlus).svg", label: "C++" },
   "c++": { path: "/icons/C++ (CPlusPlus).svg", label: "C++" },
 };

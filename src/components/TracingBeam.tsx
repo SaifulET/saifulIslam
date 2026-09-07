@@ -51,14 +51,15 @@ export function TracingBeam({ children }: { children: React.ReactNode }) {
   }, []);
 
   // Path generator creating the zig-zag timeline path down the page height
-  const p1 = Math.max(150, svgHeight * 0.25);
-  const p2 = Math.max(300, svgHeight * 0.65);
-  const pathD = `M 1 0 V ${p1} l 14 20 V ${p2} l -14 20 V ${svgHeight || 5000}`;
+  const beamHeight = Math.max(0, svgHeight - 140);
+  const p1 = Math.max(150, beamHeight * 0.25);
+  const p2 = Math.max(300, beamHeight * 0.65);
+  const pathD = `M 1 0 V ${p1} l 14 20 V ${p2} l -14 20 V ${beamHeight}`;
 
   return (
-    <div ref={containerRef} className="relative w-full min-h-screen">
+    <div ref={containerRef} className="relative w-full min-h-screen overflow-x-clip">
       {/* Vertical Scroll Tracing Beam Container */}
-      <div className="pointer-events-none absolute left-1 sm:left-4 md:left-8 lg:left-12 top-20 h-full flex justify-center flex-col items-center z-20">
+      <div className="pointer-events-none absolute left-1 sm:left-4 md:left-8 lg:left-12 top-20 bottom-12 overflow-hidden flex justify-center flex-col items-center z-20">
         {/* Top Node Indicator Dot */}
         <div
           className="flex h-4 w-4 items-center justify-center rounded-full border border-[#5AB2FF]/80 shadow-sm bg-indigo-950 transition-all duration-300 shrink-0"
@@ -71,11 +72,11 @@ export function TracingBeam({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* SVG Laser Beam Path */}
-        {svgHeight > 0 && (
+        {beamHeight > 0 && (
           <svg
-            viewBox={`0 0 20 ${svgHeight}`}
+            viewBox={`0 0 20 ${beamHeight}`}
             width="30"
-            height={svgHeight}
+            height={beamHeight}
             className="block mt-2"
             aria-hidden="true"
           >

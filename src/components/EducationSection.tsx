@@ -31,14 +31,14 @@ export default function EducationSection({ initialData }: { initialData?: Educat
   }, []);
 
   return (
-    <section id="education" className="relative py-20 pb-28 sm:pb-20 scroll-mt-20 bg-[#070612] text-white border-b border-zinc-800/80">
+    <section id="education" className="relative py-20 pb-28 sm:pb-20 scroll-mt-20 bg-slate-50 dark:bg-[#070612] text-slate-900 dark:text-white border-b border-slate-200 dark:border-zinc-800/80 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* SECTION HEADER */}
         <div className="flex items-center justify-center mb-12">
-          <div className="flex items-center gap-3 text-2xl sm:text-3xl font-extrabold tracking-wider text-white uppercase">
-            <GraduationCap className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-wider uppercase">
+          <div className="flex items-center gap-3 text-2xl sm:text-3xl font-extrabold tracking-wider text-slate-900 dark:text-white uppercase">
+            <GraduationCap className="w-7 h-7 sm:w-8 sm:h-8 text-slate-900 dark:text-white" />
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-wider uppercase">
               EDUCATION
             </h2>
           </div>
@@ -50,7 +50,7 @@ export default function EducationSection({ initialData }: { initialData?: Educat
             <Link
               key={item._id}
               href={`/education/${item._id}`}
-              className="group relative block rounded-2xl p-[1.5px] overflow-hidden transition-all duration-300 hover:scale-[1.015] cursor-pointer shadow-xl bg-zinc-900/40"
+              className="group relative block rounded-2xl p-[1.5px] overflow-hidden transition-all duration-300 hover:scale-[1.015] cursor-pointer shadow-xl bg-slate-200/60 dark:bg-zinc-900/40"
             >
               {/* Hover Flowing Light Beam */}
               <div
@@ -62,71 +62,71 @@ export default function EducationSection({ initialData }: { initialData?: Educat
               />
 
               {/* Static Border */}
-              <div className="absolute inset-0 rounded-2xl border border-zinc-800/80 group-hover:border-transparent transition-colors duration-200 pointer-events-none" />
+              <div className="absolute inset-0 rounded-2xl border border-slate-200 dark:border-zinc-800/80 group-hover:border-transparent transition-colors duration-200 pointer-events-none" />
 
               {/* Inner Card Body */}
-              <div className="relative z-10 h-full rounded-[calc(1rem-1.5px)] bg-[#0c0d16] p-6 sm:p-7 flex flex-col justify-between space-y-6">
+              <div className="relative z-10 h-full rounded-[calc(1rem-1.5px)] bg-white dark:bg-[#0c0d16] p-6 sm:p-7 flex flex-col justify-between space-y-6">
                 
                 <div className="space-y-3">
                   {/* Top Meta: University & Time Bound */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-zinc-400">
-                    <span className="flex items-center gap-1.5 text-[#5AB2FF] font-semibold">
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-slate-500 dark:text-zinc-400">
+                    <span className="flex items-center gap-1.5 text-sky-600 dark:text-[#5AB2FF] font-semibold">
                       <GraduationCap className="w-4 h-4" />
                       {item.university}
                     </span>
-                    <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-300 text-[11px]">
-                      <Calendar className="w-3.5 h-3.5 text-purple-400" />
+                    <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-zinc-300 text-[11px]">
+                      <Calendar className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
                       {item.timeBound}
                     </span>
                   </div>
 
                   {/* Degree Name */}
-                  <h3 className="text-lg sm:text-xl font-bold text-white group-hover:text-purple-300 transition-colors">
+                  <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-300 transition-colors">
                     {item.degree}
                   </h3>
 
                   {/* CGPA Badge & Location */}
                   <div className="flex flex-wrap items-center gap-3 pt-1">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-purple-950/60 border border-purple-500/40 text-purple-300 text-xs font-bold font-mono">
-                      <Award className="w-3.5 h-3.5 text-purple-400" />
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-purple-100 dark:bg-purple-950/60 border border-purple-300 dark:border-purple-500/40 text-purple-800 dark:text-purple-300 text-xs font-bold font-mono">
+                      <Award className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
                       <span>CGPA: {item.cgpa}</span>
                     </div>
 
                     {item.location && (
-                      <span className="inline-flex items-center gap-1 text-xs text-zinc-400">
-                        <MapPin className="w-3.5 h-3.5 text-zinc-500" />
+                      <span className="inline-flex items-center gap-1 text-xs text-slate-500 dark:text-zinc-400">
+                        <MapPin className="w-3.5 h-3.5 text-slate-400 dark:text-zinc-500" />
                         {item.location}
                       </span>
                     )}
                   </div>
 
                   {/* Description */}
-                  <p className="text-zinc-300 text-xs sm:text-sm leading-relaxed line-clamp-3 pt-1">
+                  <p className="text-slate-600 dark:text-zinc-300 text-xs sm:text-sm leading-relaxed line-clamp-3 pt-1">
                     {item.description}
                   </p>
                 </div>
 
                 {/* Coursework Tags & View Details Prompt */}
-                <div className="space-y-3 pt-4 border-t border-zinc-800/80">
+                <div className="space-y-3 pt-4 border-t border-slate-200 dark:border-zinc-800/80">
                   {item.coursework && item.coursework.length > 0 && (
                     <div className="flex flex-wrap gap-1.5">
                       {item.coursework.slice(0, 4).map((course, idx) => (
                         <span
                           key={idx}
-                          className="px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 text-zinc-400 text-[10px] font-mono"
+                          className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 text-[10px] font-mono"
                         >
                           {course}
                         </span>
                       ))}
                       {item.coursework.length > 4 && (
-                        <span className="text-[10px] font-mono text-zinc-500 self-center">
+                        <span className="text-[10px] font-mono text-slate-400 dark:text-zinc-500 self-center">
                           +{item.coursework.length - 4} more
                         </span>
                       )}
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between text-xs font-mono pt-1 text-purple-400 group-hover:text-[#5AB2FF] transition-colors">
+                  <div className="flex items-center justify-between text-xs font-mono pt-1 text-purple-600 dark:text-purple-400 group-hover:text-sky-600 dark:group-hover:text-[#5AB2FF] transition-colors">
                     <span className="flex items-center gap-1.5">
                       <BookOpen className="w-3.5 h-3.5" />
                       View Academic Details

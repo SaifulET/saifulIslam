@@ -2,34 +2,37 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { 
-  ShieldAlert, 
-  User, 
-  GraduationCap, 
-  Briefcase, 
-  FolderGit2, 
-  Image as ImageIcon, 
-  Cpu, 
-  Mail, 
-  Plus, 
-  Trash2, 
-  Edit3, 
-  Save, 
-  RotateCcw, 
-  CheckCircle2, 
-  AlertCircle, 
+import {
+  ShieldAlert,
+  User,
+  GraduationCap,
+  Briefcase,
+  FolderGit2,
+  Image as ImageIcon,
+  Cpu,
+  Mail,
+  Plus,
+  Trash2,
+  Edit3,
+  Save,
+  RotateCcw,
+  CheckCircle2,
+  AlertCircle,
   ExternalLink,
   ArrowLeft,
   Loader2,
   Sparkles,
   Layers,
-  Globe
+  Globe,
+  Eye,
+  EyeOff
 } from "lucide-react";
 import TechIcon from "@/components/TechIcon";
+import SocialIcon from "@/components/SocialIcon";
 
 export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState<
-    "profile" | "education" | "experience" | "projects" | "gallery" | "skills" | "messages"
+    "profile" | "about" | "education" | "experience" | "projects" | "gallery" | "skills" | "messages"
   >("profile");
 
   const [loading, setLoading] = useState(false);
@@ -43,12 +46,19 @@ export default function AdminDashboardPage() {
     bio: "",
     location: "",
     email: "",
+    phone: "",
     resumeUrl: "",
     avatarUrl: "",
+    aboutTitle: "",
+    aboutDescription: "",
+    aboutImage: "",
+    githubUrl: "",
+    linkedinUrl: "",
     availableForHire: true,
     socialLinks: [],
   });
 
+  const [aboutList, setAboutList] = useState<any[]>([]);
   const [educationList, setEducationList] = useState<any[]>([]);
   const [experienceList, setExperienceList] = useState<any[]>([]);
   const [projectsList, setProjectsList] = useState<any[]>([]);
@@ -57,9 +67,27 @@ export default function AdminDashboardPage() {
   const [messagesList, setMessagesList] = useState<any[]>([]);
 
   // FORM MODAL & EDIT STATES
+  const [editingAboutId, setEditingAboutId] = useState<string | null>(null);
+  const [aboutForm, setAboutForm] = useState({
+    title: "",
+    image: "",
+    description: "",
+    name: "",
+    location: "",
+    email: "",
+    phone: "",
+    showDetails: false,
+    order: 0,
+  });
   const [editingSocialIndex, setEditingSocialIndex] = useState<number | null>(null);
-  const [newSocial, setNewSocial] = useState({ platform: "", url: "", iconName: "Globe" });
-  
+  const [newSocial, setNewSocial] = useState({
+    platform: "",
+    url: "",
+    iconName: "Globe",
+    showInHero: true,
+    showInContact: true,
+  });
+
   const [editingEduId, setEditingEduId] = useState<string | null>(null);
   const [eduForm, setEduForm] = useState({
     degree: "",
@@ -73,12 +101,20 @@ export default function AdminDashboardPage() {
   });
 
   const [editingExpId, setEditingExpId] = useState<string | null>(null);
-  const [expForm, setExpForm] = useState({
+  const [expForm, setExpForm] = useState<{
+    company: string;
+    role: string;
+    timeBound: string;
+    description: string;
+    responsibilities: string[];
+    technologies: string;
+    location: string;
+  }>({
     company: "",
     role: "",
     timeBound: "",
     description: "",
-    responsibilities: "",
+    responsibilities: [""],
     technologies: "",
     location: "",
   });
@@ -121,8 +157,9 @@ export default function AdminDashboardPage() {
   const fetchAllData = async () => {
     try {
       setLoading(true);
-      const [pRes, eRes, expRes, prRes, gRes, sRes, mRes] = await Promise.all([
+      const [pRes, aRes, eRes, expRes, prRes, gRes, sRes, mRes] = await Promise.all([
         fetch("/api/profile").then((r) => r.json()),
+        fetch("/api/about").then((r) => r.json()),
         fetch("/api/education").then((r) => r.json()),
         fetch("/api/experience").then((r) => r.json()),
         fetch("/api/projects").then((r) => r.json()),
@@ -132,6 +169,7 @@ export default function AdminDashboardPage() {
       ]);
 
       if (pRes && !pRes.error) setProfile(pRes);
+      if (Array.isArray(aRes)) setAboutList(aRes);
       if (Array.isArray(eRes)) setEducationList(eRes);
       if (Array.isArray(expRes)) setExperienceList(expRes);
       if (Array.isArray(prRes)) setProjectsList(prRes);
@@ -215,17 +253,45 @@ export default function AdminDashboardPage() {
         socialLinks: [...(profile.socialLinks || []), newSocial],
       });
     }
-    setNewSocial({ platform: "", url: "", iconName: "Globe" });
+    setNewSocial({ platform: "", url: "", iconName: "Globe", showInHero: true, showInContact: true });
   };
 
   const handleEditSocial = (index: number) => {
     setEditingSocialIndex(index);
-    setNewSocial(profile.socialLinks[index]);
+    const s = profile.socialLinks[index];
+    setNewSocial({
+      platform: s.platform || "",
+      url: s.url || "",
+      iconName: s.iconName || "Globe",
+      showInHero: s.showInHero !== false,
+      showInContact: s.showInContact !== false,
+    });
   };
 
   const handleCancelEditSocial = () => {
     setEditingSocialIndex(null);
-    setNewSocial({ platform: "", url: "", iconName: "Globe" });
+    setNewSocial({ platform: "", url: "", iconName: "Globe", showInHero: true, showInContact: true });
+  };
+
+  // TOGGLE SOCIAL VISIBILITY
+  const handleToggleSocialHero = (index: number) => {
+    const updated = [...(profile.socialLinks || [])];
+    const s = updated[index];
+    updated[index] = {
+      ...s,
+      showInHero: s.showInHero === false ? true : false,
+    };
+    setProfile({ ...profile, socialLinks: updated });
+  };
+
+  const handleToggleSocialContact = (index: number) => {
+    const updated = [...(profile.socialLinks || [])];
+    const s = updated[index];
+    updated[index] = {
+      ...s,
+      showInContact: s.showInContact === false ? true : false,
+    };
+    setProfile({ ...profile, socialLinks: updated });
   };
 
   // REMOVE SOCIAL LINK
@@ -235,6 +301,78 @@ export default function AdminDashboardPage() {
     setProfile({ ...profile, socialLinks: updated });
     if (editingSocialIndex === index) {
       handleCancelEditSocial();
+    }
+  };
+
+  // ADD / UPDATE ABOUT SECTION
+  const handleAddAbout = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const url = editingAboutId ? `/api/about/${editingAboutId}` : "/api/about";
+      const method = editingAboutId ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(aboutForm),
+      });
+      if (res.ok) {
+        notify("success", editingAboutId ? "About section updated successfully!" : "About section added!");
+        handleCancelEditAbout();
+        fetchAllData();
+      } else {
+        const data = await res.json();
+        notify("error", data.error || "Failed to save about section");
+      }
+    } catch (err: any) {
+      notify("error", err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditAbout = (item: any) => {
+    setEditingAboutId(item._id);
+    setAboutForm({
+      title: item.title || "",
+      image: item.image || "",
+      description: item.description || "",
+      name: item.name || "",
+      location: item.location || "",
+      email: item.email || "",
+      phone: item.phone || "",
+      showDetails: Boolean(item.showDetails),
+      order: item.order ?? 0,
+    });
+    window.scrollTo({ top: 300, behavior: "smooth" });
+  };
+
+  const handleCancelEditAbout = () => {
+    setEditingAboutId(null);
+    setAboutForm({
+      title: "",
+      image: "",
+      description: "",
+      name: "",
+      location: "",
+      email: "",
+      phone: "",
+      showDetails: false,
+      order: 0,
+    });
+  };
+
+  // DELETE ABOUT SECTION
+  const handleDeleteAbout = async (id: string) => {
+    if (!confirm("Delete this about section?")) return;
+    try {
+      await fetch(`/api/about/${id}`, { method: "DELETE" });
+      notify("success", "About section deleted");
+      if (editingAboutId === id) handleCancelEditAbout();
+      fetchAllData();
+    } catch (err: any) {
+      notify("error", err.message);
     }
   };
 
@@ -313,14 +451,44 @@ export default function AdminDashboardPage() {
     }
   };
 
+  // EXPERIENCE RESPONSIBILITY FIELD HELPERS
+  const handleAddResponsibilityField = () => {
+    setExpForm((prev) => ({
+      ...prev,
+      responsibilities: [...prev.responsibilities, ""],
+    }));
+  };
+
+  const handleUpdateResponsibilityField = (index: number, value: string) => {
+    setExpForm((prev) => {
+      const updated = [...prev.responsibilities];
+      updated[index] = value;
+      return { ...prev, responsibilities: updated };
+    });
+  };
+
+  const handleRemoveResponsibilityField = (index: number) => {
+    setExpForm((prev) => {
+      const updated = prev.responsibilities.filter((_, i) => i !== index);
+      return {
+        ...prev,
+        responsibilities: updated.length > 0 ? updated : [""],
+      };
+    });
+  };
+
   // ADD / UPDATE EXPERIENCE
   const handleAddExperience = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       setLoading(true);
+      const cleanedResponsibilities = expForm.responsibilities
+        .map((s) => s.trim())
+        .filter(Boolean);
+
       const payload = {
         ...expForm,
-        responsibilities: expForm.responsibilities ? expForm.responsibilities.split(",").map((s) => s.trim()).filter(Boolean) : [],
+        responsibilities: cleanedResponsibilities,
         technologies: expForm.technologies ? expForm.technologies.split(",").map((s) => s.trim()).filter(Boolean) : [],
       };
       const url = editingExpId ? `/api/experience/${editingExpId}` : "/api/experience";
@@ -348,13 +516,19 @@ export default function AdminDashboardPage() {
 
   const handleEditExperience = (exp: any) => {
     setEditingExpId(exp._id);
+    let initialResponsibilities = [""];
+    if (Array.isArray(exp.responsibilities) && exp.responsibilities.length > 0) {
+      initialResponsibilities = exp.responsibilities;
+    } else if (typeof exp.responsibilities === "string" && exp.responsibilities.trim()) {
+      initialResponsibilities = exp.responsibilities.split(",").map((s: string) => s.trim()).filter(Boolean);
+    }
     setExpForm({
       company: exp.company || "",
       role: exp.role || "",
       timeBound: exp.timeBound || "",
       location: exp.location || "",
       technologies: Array.isArray(exp.technologies) ? exp.technologies.join(", ") : (exp.technologies || ""),
-      responsibilities: Array.isArray(exp.responsibilities) ? exp.responsibilities.join(", ") : (exp.responsibilities || ""),
+      responsibilities: initialResponsibilities.length > 0 ? initialResponsibilities : [""],
       description: exp.description || "",
     });
     window.scrollTo({ top: 300, behavior: "smooth" });
@@ -367,7 +541,7 @@ export default function AdminDashboardPage() {
       role: "",
       timeBound: "",
       description: "",
-      responsibilities: "",
+      responsibilities: [""],
       technologies: "",
       location: "",
     });
@@ -610,6 +784,7 @@ export default function AdminDashboardPage() {
 
   const navTabs = [
     { id: "profile", label: "Profile & Hero", icon: <User className="w-4 h-4" /> },
+    { id: "about", label: "About Me", icon: <User className="w-4 h-4" />, count: aboutList.length },
     { id: "education", label: "Education", icon: <GraduationCap className="w-4 h-4" />, count: educationList.length },
     { id: "experience", label: "Experience", icon: <Briefcase className="w-4 h-4" />, count: experienceList.length },
     { id: "projects", label: "Projects", icon: <FolderGit2 className="w-4 h-4" />, count: projectsList.length },
@@ -620,11 +795,11 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#07080f] text-white">
-      
+
       {/* TOP ADMIN HEADER */}
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#090a12]/90 border-b border-zinc-800/80 px-4 sm:px-8 py-3.5">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
-          
+
           <div className="flex items-center gap-3">
             <Link
               href="/"
@@ -671,11 +846,10 @@ export default function AdminDashboardPage() {
       {status && (
         <div className="fixed top-20 right-6 z-50 animate-in slide-in-from-top-4 duration-200">
           <div
-            className={`p-4 rounded-2xl flex items-center gap-2.5 text-xs font-bold shadow-2xl ${
-              status.type === "success"
-                ? "bg-emerald-950/90 border border-emerald-500 text-emerald-200"
-                : "bg-red-950/90 border border-red-500 text-red-200"
-            }`}
+            className={`p-4 rounded-2xl flex items-center gap-2.5 text-xs font-bold shadow-2xl ${status.type === "success"
+              ? "bg-emerald-950/90 border border-emerald-500 text-emerald-200"
+              : "bg-red-950/90 border border-red-500 text-red-200"
+              }`}
           >
             {status.type === "success" ? (
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
@@ -689,7 +863,7 @@ export default function AdminDashboardPage() {
 
       {/* MAIN ADMIN CONTENT */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
+
         {/* TAB NAVIGATION BUTTONS */}
         <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-zinc-950 border border-zinc-800/90 overflow-x-auto mb-8">
           {navTabs.map((tab) => {
@@ -698,18 +872,16 @@ export default function AdminDashboardPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-sans font-semibold transition-all shrink-0 ${
-                  isActive
-                    ? "bg-purple-600 text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]"
-                    : "text-zinc-400 hover:text-white hover:bg-zinc-900"
-                }`}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-sans font-semibold transition-all shrink-0 ${isActive
+                  ? "bg-purple-600 text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]"
+                  : "text-zinc-400 hover:text-white hover:bg-zinc-900"
+                  }`}
               >
                 {tab.icon}
                 <span>{tab.label}</span>
                 {tab.count !== undefined && (
-                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
-                    isActive ? "bg-purple-800 text-white" : "bg-zinc-800 text-zinc-400"
-                  }`}>
+                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${isActive ? "bg-purple-800 text-white" : "bg-zinc-800 text-zinc-400"
+                    }`}>
                     {tab.count}
                   </span>
                 )}
@@ -738,7 +910,7 @@ export default function AdminDashboardPage() {
 
             <form onSubmit={handleSaveProfile} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                
+
                 <div className="space-y-1.5">
                   <label className="text-xs font-mono font-bold text-zinc-300">Name</label>
                   <input
@@ -780,6 +952,17 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div className="space-y-1.5">
+                  <label className="text-xs font-mono font-bold text-zinc-300">Phone / Mobile</label>
+                  <input
+                    type="text"
+                    value={profile.phone || ""}
+                    onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+                    placeholder="e.g. 01707961402"
+                    className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs sm:text-sm text-white"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
                   <label className="text-xs font-mono font-bold text-zinc-300">Resume Link (URL)</label>
                   <input
                     type="text"
@@ -790,6 +973,28 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div className="space-y-1.5">
+                  <label className="text-xs font-mono font-bold text-zinc-300">LinkedIn Profile URL</label>
+                  <input
+                    type="text"
+                    value={profile.linkedinUrl || ""}
+                    onChange={(e) => setProfile({ ...profile, linkedinUrl: e.target.value })}
+                    placeholder="https://linkedin.com/in/..."
+                    className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs sm:text-sm text-white"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-mono font-bold text-zinc-300">GitHub Profile URL</label>
+                  <input
+                    type="text"
+                    value={profile.githubUrl || ""}
+                    onChange={(e) => setProfile({ ...profile, githubUrl: e.target.value })}
+                    placeholder="https://github.com/..."
+                    className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs sm:text-sm text-white"
+                  />
+                </div>
+
+                <div className="space-y-1.5 sm:col-span-2">
                   <label className="text-xs font-mono font-bold text-zinc-300">Avatar / Profile Icon Path</label>
                   <input
                     type="text"
@@ -830,7 +1035,7 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div className="space-y-1.5 sm:col-span-2">
-                  <label className="text-xs font-mono font-bold text-zinc-300">Bio Summary</label>
+                  <label className="text-xs font-mono font-bold text-zinc-300">Hero Bio Summary</label>
                   <textarea
                     rows={3}
                     value={profile.bio || ""}
@@ -841,110 +1046,537 @@ export default function AdminDashboardPage() {
 
               </div>
 
+              {/* ABOUT ME SECTION CONFIGURATION */}
+              <div className="pt-6 border-t border-zinc-800 space-y-4">
+                <div className="flex items-center gap-2 text-purple-400 font-mono text-sm font-bold">
+                  <User className="w-4 h-4" />
+                  <span>About Me Section Settings (Homepage 2-Column Section)</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-mono font-bold text-zinc-300">About Me Title / Headline</label>
+                    <input
+                      type="text"
+                      value={profile.aboutTitle || ""}
+                      onChange={(e) => setProfile({ ...profile, aboutTitle: e.target.value })}
+                      placeholder="e.g. Junior Fullstack Developer"
+                      className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs sm:text-sm text-white"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-mono font-bold text-zinc-300">About Me Image Path / URL</label>
+                    <input
+                      type="text"
+                      value={profile.aboutImage || ""}
+                      onChange={(e) => setProfile({ ...profile, aboutImage: e.target.value })}
+                      placeholder="e.g. /images/about-me.png or https://..."
+                      className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs sm:text-sm text-white"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <label className="text-xs font-mono font-bold text-zinc-300">About Me Description / Detailed Story</label>
+                    <textarea
+                      rows={5}
+                      value={profile.aboutDescription || ""}
+                      onChange={(e) => setProfile({ ...profile, aboutDescription: e.target.value })}
+                      placeholder="Write your comprehensive developer story and passion..."
+                      className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs sm:text-sm text-white resize-none leading-relaxed"
+                    />
+                  </div>
+                </div>
+              </div>
+
               {/* SOCIAL LINKS MANAGER */}
-              <div className="pt-4 border-t border-zinc-800 space-y-4">
-                <h3 className="text-sm font-bold text-white font-mono flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-cyan-400" />
-                  <span>Social Media &amp; Channels</span>
-                </h3>
+              <div className="pt-6 border-t border-zinc-800 space-y-5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <h3 className="text-sm font-bold text-white font-mono flex items-center gap-2">
+                      <Globe className="w-4 h-4 text-cyan-400" />
+                      <span>Social Media &amp; Channels</span>
+                    </h3>
+                    <p className="text-xs text-zinc-400 mt-0.5">
+                      Add new social networks and control their visibility in Hero &amp; Contact sections.
+                    </p>
+                  </div>
+                  <span className="text-[11px] font-mono text-zinc-500 bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-800 self-start sm:self-auto">
+                    {profile.socialLinks?.length || 0} Links Configured
+                  </span>
+                </div>
 
                 {/* Existing Social Links */}
-                <div className="space-y-2">
-                  {profile.socialLinks?.map((link: any, idx: number) => (
-                    <div
-                      key={idx}
-                      className="flex items-center justify-between p-3 rounded-xl bg-zinc-900 border border-zinc-800 text-xs"
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="font-bold text-cyan-400">{link.platform}</span>
-                        <span className="text-zinc-400 truncate max-w-md">{link.url}</span>
-                        <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 font-mono">
-                          Icon: {link.iconName}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => handleEditSocial(idx)}
-                          className="p-1.5 rounded-lg text-purple-400 hover:bg-purple-950/60 transition-colors"
-                          title="Edit social link"
-                        >
-                          <Edit3 className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveSocial(idx)}
-                          className="p-1.5 rounded-lg text-red-400 hover:bg-red-950/60 transition-colors"
-                          title="Delete social link"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
+                <div className="space-y-2.5">
+                  {(!profile.socialLinks || profile.socialLinks.length === 0) && (
+                    <div className="p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 text-xs text-zinc-500 font-mono text-center">
+                      No social links added yet. Use the form below to add your profiles.
                     </div>
-                  ))}
+                  )}
+
+                  {profile.socialLinks?.map((link: any, idx: number) => {
+                    const isHeroVisible = link.showInHero !== false;
+                    const isContactVisible = link.showInContact !== false;
+
+                    return (
+                      <div
+                        key={idx}
+                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-zinc-900/90 border border-zinc-800 text-xs hover:border-zinc-700 transition-all"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="p-2 rounded-lg bg-zinc-800 border border-zinc-700/80 text-cyan-400 shrink-0">
+                            <SocialIcon iconName={link.iconName} platform={link.platform} className="w-4 h-4" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="font-bold text-white flex items-center gap-2">
+                              <span>{link.platform}</span>
+                              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">
+                                {link.iconName || "Globe"}
+                              </span>
+                            </div>
+                            <div className="text-zinc-400 truncate max-w-xs sm:max-w-sm md:max-w-md text-[11px] font-mono">
+                              {link.url}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-2 self-end sm:self-auto shrink-0">
+                          {/* Hero Toggle Badge */}
+                          <button
+                            type="button"
+                            onClick={() => handleToggleSocialHero(idx)}
+                            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium transition-all ${
+                              isHeroVisible
+                                ? "bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-900/80"
+                                : "bg-zinc-800/80 border border-zinc-700 text-zinc-400 hover:bg-zinc-700/80"
+                            }`}
+                            title="Click to toggle visibility in Hero section"
+                          >
+                            {isHeroVisible ? <Eye className="w-3 h-3 text-emerald-400" /> : <EyeOff className="w-3 h-3 text-zinc-400" />}
+                            <span>Hero: {isHeroVisible ? "ON" : "OFF"}</span>
+                          </button>
+
+                          {/* Contact Toggle Badge */}
+                          <button
+                            type="button"
+                            onClick={() => handleToggleSocialContact(idx)}
+                            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium transition-all ${
+                              isContactVisible
+                                ? "bg-purple-950/80 border border-purple-500/40 text-purple-300 hover:bg-purple-900/80"
+                                : "bg-zinc-800/80 border border-zinc-700 text-zinc-400 hover:bg-zinc-700/80"
+                            }`}
+                            title="Click to toggle visibility in Contact section"
+                          >
+                            {isContactVisible ? <Eye className="w-3 h-3 text-purple-400" /> : <EyeOff className="w-3 h-3 text-zinc-400" />}
+                            <span>Contact: {isContactVisible ? "ON" : "OFF"}</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => handleEditSocial(idx)}
+                            className="p-1.5 rounded-lg text-purple-400 hover:bg-purple-950/60 border border-transparent hover:border-purple-500/30 transition-colors"
+                            title="Edit social link"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveSocial(idx)}
+                            className="p-1.5 rounded-lg text-red-400 hover:bg-red-950/60 border border-transparent hover:border-red-500/30 transition-colors"
+                            title="Delete social link"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 {/* Add / Edit Social Link Form */}
-                <div className="flex flex-wrap items-center gap-3 p-4 rounded-2xl bg-zinc-950 border border-zinc-800">
-                  <input
-                    type="text"
-                    placeholder="Platform (e.g. GitHub)"
-                    value={newSocial.platform}
-                    onChange={(e) => setNewSocial({ ...newSocial, platform: e.target.value })}
-                    className="px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-white"
-                  />
-                  <input
-                    type="text"
-                    placeholder="URL (e.g. https://github.com/...)"
-                    value={newSocial.url}
-                    onChange={(e) => setNewSocial({ ...newSocial, url: e.target.value })}
-                    className="flex-1 min-w-[200px] px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-white"
-                  />
-                  <select
-                    value={newSocial.iconName}
-                    onChange={(e) => setNewSocial({ ...newSocial, iconName: e.target.value })}
-                    className="px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-white"
-                  >
-                    <option value="Github">Github</option>
-                    <option value="Linkedin">Linkedin</option>
-                    <option value="Twitter">Twitter / X</option>
-                    <option value="Discord">Discord</option>
-                    <option value="Hackerrank">Hackerrank</option>
-                    <option value="Stackoverflow">Stackoverflow</option>
-                    <option value="Devto">Dev.to</option>
-                    <option value="Mail">Mail</option>
-                    <option value="Globe">Globe</option>
-                  </select>
-                  <button
-                    type="button"
-                    onClick={handleAddSocial}
-                    className="flex items-center gap-1 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold"
-                  >
-                    {editingSocialIndex !== null ? (
+                <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-inner">
+                  <div className="text-xs font-mono font-bold text-zinc-300 flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>{editingSocialIndex !== null ? "Edit Social Media Link" : "Add New Social Media Link"}</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                    <div className="sm:col-span-4">
+                      <label className="text-[11px] font-mono text-zinc-400 mb-1 block">Platform Name</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. GitHub, Discord, LeetCode"
+                        value={newSocial.platform}
+                        onChange={(e) => setNewSocial({ ...newSocial, platform: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-white placeholder:text-zinc-600 focus:border-cyan-500/60 outline-none"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-5">
+                      <label className="text-[11px] font-mono text-zinc-400 mb-1 block">Profile / Channel URL</label>
+                      <input
+                        type="text"
+                        placeholder="https://..."
+                        value={newSocial.url}
+                        onChange={(e) => setNewSocial({ ...newSocial, url: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-white placeholder:text-zinc-600 focus:border-cyan-500/60 outline-none"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-3">
+                      <label className="text-[11px] font-mono text-zinc-400 mb-1 block">Icon Symbol</label>
+                      <select
+                        value={newSocial.iconName}
+                        onChange={(e) => setNewSocial({ ...newSocial, iconName: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-white focus:border-cyan-500/60 outline-none"
+                      >
+                        <option value="Github">GitHub</option>
+                        <option value="Linkedin">LinkedIn</option>
+                        <option value="Twitter">Twitter / X</option>
+                        <option value="Discord">Discord</option>
+                        <option value="Youtube">YouTube</option>
+                        <option value="Facebook">Facebook</option>
+                        <option value="Instagram">Instagram</option>
+                        <option value="Telegram">Telegram</option>
+                        <option value="Whatsapp">WhatsApp</option>
+                        <option value="Leetcode">LeetCode</option>
+                        <option value="Codeforces">Codeforces</option>
+                        <option value="Hackerrank">HackerRank</option>
+                        <option value="Kaggle">Kaggle</option>
+                        <option value="Stackoverflow">Stack Overflow</option>
+                        <option value="Devto">Dev.to</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Twitch">Twitch</option>
+                        <option value="Dribbble">Dribbble</option>
+                        <option value="Behance">Behance</option>
+                        <option value="Mail">Mail / Email</option>
+                        <option value="Phone">Phone / Mobile</option>
+                        <option value="Globe">Globe / Website</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Section Visibility Checkboxes */}
+                  <div className="flex flex-wrap items-center gap-6 pt-2 border-t border-zinc-900">
+                    <label className="flex items-center gap-2 cursor-pointer text-xs text-zinc-300 select-none">
+                      <input
+                        type="checkbox"
+                        checked={newSocial.showInHero !== false}
+                        onChange={(e) => setNewSocial({ ...newSocial, showInHero: e.target.checked })}
+                        className="w-4 h-4 rounded bg-zinc-900 border-zinc-700 text-cyan-600 focus:ring-0 cursor-pointer"
+                      />
+                      <span>Show in <strong className="text-white">Hero Section</strong></span>
+                    </label>
+
+                    <label className="flex items-center gap-2 cursor-pointer text-xs text-zinc-300 select-none">
+                      <input
+                        type="checkbox"
+                        checked={newSocial.showInContact !== false}
+                        onChange={(e) => setNewSocial({ ...newSocial, showInContact: e.target.checked })}
+                        className="w-4 h-4 rounded bg-zinc-900 border-zinc-700 text-purple-600 focus:ring-0 cursor-pointer"
+                      />
+                      <span>Show in <strong className="text-white">Contact Section</strong></span>
+                    </label>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex items-center gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={handleAddSocial}
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold transition-all shadow-md cursor-pointer"
+                    >
+                      {editingSocialIndex !== null ? (
+                        <>
+                          <Save className="w-3.5 h-3.5" />
+                          <span>Update Social Link</span>
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Add Social Link</span>
+                        </>
+                      )}
+                    </button>
+                    {editingSocialIndex !== null && (
+                      <button
+                        type="button"
+                        onClick={handleCancelEditSocial}
+                        className="px-3.5 py-2 rounded-xl bg-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold transition-colors cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+              </div>
+            </form>
+          </div>
+        )}
+
+        {/* TAB: ABOUT ME SECTIONS */}
+        {activeTab === "about" && (
+          <div className="space-y-8">
+            {/* Add / Edit About Section Form */}
+            <div className="rounded-3xl bg-[#0c0e18] border border-purple-900/40 p-6 sm:p-8 space-y-4 shadow-xl">
+              <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
+                <div>
+                  <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                    {editingAboutId ? (
                       <>
-                        <Save className="w-3.5 h-3.5" />
-                        <span>Update Link</span>
+                        <Edit3 className="w-5 h-5 text-purple-400" />
+                        <span>Edit About Me Section</span>
                       </>
                     ) : (
                       <>
-                        <Plus className="w-3.5 h-3.5" />
-                        <span>Add Link</span>
+                        <Plus className="w-5 h-5 text-purple-400" />
+                        <span>Add New About Me Section</span>
+                      </>
+                    )}
+                  </h2>
+                  <p className="text-xs text-zinc-400 mt-0.5">
+                    Customize your About Me section (image on left, description and personal details on right). Positioned right before the Image Gallery on the homepage.
+                  </p>
+                </div>
+                {editingAboutId && (
+                  <button
+                    type="button"
+                    onClick={handleCancelEditAbout}
+                    className="px-3 py-1.5 rounded-xl bg-zinc-800 text-zinc-400 hover:text-white text-xs font-semibold"
+                  >
+                    Cancel Edit
+                  </button>
+                )}
+              </div>
+
+              <form onSubmit={handleAddAbout} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  
+                  {/* Title */}
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <label className="text-xs font-mono font-bold text-zinc-300">
+                      Section Headline / Role Title (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Junior Fullstack Developer (Optional)"
+                      value={aboutForm.title}
+                      onChange={(e) => setAboutForm({ ...aboutForm, title: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs sm:text-sm text-white"
+                    />
+                  </div>
+
+                  {/* Image Path / URL */}
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <label className="text-xs font-mono font-bold text-zinc-300">
+                      Image Path / URL (Left Column Photo) *
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. /images/about-me.png or https://..."
+                        value={aboutForm.image}
+                        onChange={(e) => setAboutForm({ ...aboutForm, image: e.target.value })}
+                        className="flex-1 px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs sm:text-sm text-white"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setAboutForm({ ...aboutForm, image: "/images/about-me.png" })}
+                        className="px-3 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-purple-300 text-xs font-mono shrink-0"
+                      >
+                        Default Photo
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <label className="text-xs font-mono font-bold text-zinc-300">
+                      About Description / Bio Paragraph *
+                    </label>
+                    <textarea
+                      rows={5}
+                      required
+                      placeholder="Write your detailed developer journey, passions, design philosophy..."
+                      value={aboutForm.description}
+                      onChange={(e) => setAboutForm({ ...aboutForm, description: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs sm:text-sm text-white resize-none leading-relaxed"
+                    />
+                  </div>
+
+                  {/* Name */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-mono font-bold text-zinc-300">Name (Optional)</label>
+                    <input
+                      type="text"
+                      placeholder="Leave blank if not needed"
+                      value={aboutForm.name}
+                      onChange={(e) => setAboutForm({ ...aboutForm, name: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs sm:text-sm text-white"
+                    />
+                  </div>
+
+                  {/* Location */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-mono font-bold text-zinc-300">Location (Optional)</label>
+                    <input
+                      type="text"
+                      placeholder="Leave blank if not needed"
+                      value={aboutForm.location}
+                      onChange={(e) => setAboutForm({ ...aboutForm, location: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs sm:text-sm text-white"
+                    />
+                  </div>
+
+                  {/* Gmail / Email */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-mono font-bold text-zinc-300">Gmail / Email (Optional)</label>
+                    <input
+                      type="email"
+                      placeholder="Leave blank if not needed"
+                      value={aboutForm.email}
+                      onChange={(e) => setAboutForm({ ...aboutForm, email: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs sm:text-sm text-white"
+                    />
+                  </div>
+
+                  {/* Mobile */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-mono font-bold text-zinc-300">Mobile / Phone (Optional)</label>
+                    <input
+                      type="text"
+                      placeholder="Leave blank if not needed"
+                      value={aboutForm.phone}
+                      onChange={(e) => setAboutForm({ ...aboutForm, phone: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs sm:text-sm text-white"
+                    />
+                  </div>
+
+                  {/* Show Details Checkbox */}
+                  <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-white sm:col-span-2">
+                    <input
+                      type="checkbox"
+                      id="aboutShowDetails"
+                      checked={aboutForm.showDetails ?? false}
+                      onChange={(e) => setAboutForm({ ...aboutForm, showDetails: e.target.checked })}
+                      className="w-4 h-4 rounded text-purple-600"
+                    />
+                    <label htmlFor="aboutShowDetails" className="cursor-pointer">
+                      Include Education &amp; Experience tabs preview in this section (Optional, unchecked by default)
+                    </label>
+                  </div>
+
+                  {/* Order */}
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <label className="text-xs font-mono font-bold text-zinc-300">Display Order (e.g. 1, 2...)</label>
+                    <input
+                      type="number"
+                      value={aboutForm.order}
+                      onChange={(e) => setAboutForm({ ...aboutForm, order: Number(e.target.value) })}
+                      className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs sm:text-sm text-white"
+                    />
+                  </div>
+
+                </div>
+
+                <div className="flex items-center gap-3 pt-2">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow-md transition-all hover:scale-105 disabled:opacity-50"
+                  >
+                    {editingAboutId ? (
+                      <>
+                        <Save className="w-4 h-4" />
+                        <span>Update Section</span>
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4" />
+                        <span>Add Section</span>
                       </>
                     )}
                   </button>
-                  {editingSocialIndex !== null && (
+                  {editingAboutId && (
                     <button
                       type="button"
-                      onClick={handleCancelEditSocial}
-                      className="px-3 py-2 rounded-xl bg-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold"
+                      onClick={handleCancelEditAbout}
+                      className="px-4 py-2.5 rounded-xl bg-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold"
                     >
                       Cancel
                     </button>
                   )}
                 </div>
+              </form>
+            </div>
 
-              </div>
-            </form>
+            {/* List of Existing About Sections */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-bold text-white font-mono flex items-center gap-2">
+                <User className="w-4 h-4 text-purple-400" />
+                <span>Existing About Sections ({aboutList.length})</span>
+              </h3>
+
+              {aboutList.length === 0 ? (
+                <div className="p-8 rounded-3xl bg-[#0c0e18] border border-zinc-800 text-center text-zinc-500 text-xs font-mono">
+                  No custom about sections created yet. Default profile info is currently rendered on the portfolio.
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {aboutList.map((item, idx) => (
+                    <div
+                      key={item._id || idx}
+                      className="p-5 rounded-3xl bg-[#0c0e18] border border-zinc-800 hover:border-purple-500/50 transition-all flex flex-col justify-between gap-4 group shadow-md"
+                    >
+                      <div className="flex gap-4">
+                        <div className="relative w-20 h-24 rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-700 shrink-0">
+                          <img
+                            src={item.image || "/images/about-me.png"}
+                            alt={item.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="space-y-1 min-w-0 flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] px-2 py-0.5 rounded-md bg-purple-950/80 border border-purple-500/40 text-purple-300 font-mono font-bold">
+                              Order #{item.order ?? idx + 1}
+                            </span>
+                          </div>
+                          <h4 className="font-bold text-white text-sm truncate">{item.title}</h4>
+                          <p className="text-xs text-zinc-400 line-clamp-3 leading-relaxed">{item.description}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between border-t border-zinc-800/80 pt-3">
+                        <span className="text-[11px] text-zinc-500 font-mono">
+                          {item.location || "Default Location"}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleEditAbout(item)}
+                            className="p-1.5 rounded-lg text-purple-400 hover:bg-purple-950/60 transition-colors"
+                            title="Edit"
+                          >
+                            <Edit3 className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteAbout(item._id)}
+                            className="p-1.5 rounded-lg text-red-400 hover:bg-red-950/60 transition-colors"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
 
@@ -1223,15 +1855,49 @@ export default function AdminDashboardPage() {
                     />
                   </div>
 
-                  <div className="space-y-1 sm:col-span-2">
-                    <label className="text-xs font-mono font-bold text-zinc-300">Key Responsibilities (Comma-separated)</label>
-                    <input
-                      type="text"
-                      placeholder="Engineered low-latency WebSockets pipelines, Developed rich cybernetic UI, Implemented CI/CD"
-                      value={expForm.responsibilities}
-                      onChange={(e) => setExpForm({ ...expForm, responsibilities: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs sm:text-sm text-white"
-                    />
+                  <div className="space-y-3 sm:col-span-2">
+                    <div className="flex items-center justify-between pb-1">
+                      <label className="text-xs font-mono font-bold text-zinc-300 flex items-center gap-2">
+                        <span>Key Responsibilities</span>
+                        <span className="text-[11px] font-normal text-emerald-400 font-mono">
+                          ({expForm.responsibilities.filter((r) => r.trim().length > 0).length} items)
+                        </span>
+                      </label>
+                      <button
+                        type="button"
+                        onClick={handleAddResponsibilityField}
+                        className="px-3 py-1.5 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/40 text-emerald-300 text-xs font-mono font-semibold flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95 shadow-sm"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>Add Responsibility</span>
+                      </button>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {expForm.responsibilities.map((resp, idx) => (
+                        <div key={idx} className="flex items-center gap-2 group/field">
+                          <span className="w-7 h-7 rounded-lg bg-zinc-800/80 border border-zinc-700/50 flex items-center justify-center text-xs font-mono text-zinc-400 font-bold shrink-0">
+                            {idx + 1}
+                          </span>
+                          <input
+                            type="text"
+                            placeholder="e.g. Engineered low-latency WebSockets & RabbitMQ event pipelines handling 100K+ concurrent events"
+                            value={resp}
+                            onChange={(e) => handleUpdateResponsibilityField(idx, e.target.value)}
+                            className="flex-1 px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs sm:text-sm text-white focus:border-emerald-500 focus:outline-none transition-colors"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveResponsibilityField(idx)}
+                            disabled={expForm.responsibilities.length === 1 && resp === ""}
+                            className="p-2.5 rounded-xl bg-zinc-900 hover:bg-red-950/60 border border-zinc-800 hover:border-red-500/40 text-zinc-400 hover:text-red-400 transition-colors disabled:opacity-30 disabled:pointer-events-none shrink-0"
+                            title="Remove this responsibility"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
                   <div className="space-y-1 sm:col-span-2">
@@ -1275,11 +1941,21 @@ export default function AdminDashboardPage() {
               <div className="space-y-4">
                 {experienceList.map((exp) => (
                   <div key={exp._id} className="p-5 rounded-2xl bg-zinc-900 border border-zinc-800 flex justify-between items-start gap-4 transition-all hover:border-emerald-500/40">
-                    <div className="space-y-1 text-xs flex-1">
+                    <div className="space-y-1.5 text-xs flex-1">
                       <div className="text-emerald-400 font-bold text-sm">{exp.role}</div>
                       <div className="text-white font-semibold">{exp.company} | {exp.timeBound}</div>
                       {exp.location && <div className="text-zinc-500 text-[11px]">📍 {exp.location}</div>}
-                      <p className="text-zinc-400 pt-1">{exp.description}</p>
+                      <p className="text-zinc-300 pt-1">{exp.description}</p>
+                      {Array.isArray(exp.responsibilities) && exp.responsibilities.length > 0 && (
+                        <div className="pt-2">
+                          <div className="text-[11px] font-mono font-bold text-zinc-400 uppercase tracking-wider mb-1">Responsibilities:</div>
+                          <ul className="list-disc list-inside text-zinc-400 text-xs space-y-0.5">
+                            {exp.responsibilities.map((r: string, idx: number) => (
+                              <li key={idx} className="leading-relaxed">{r}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <button
@@ -1561,7 +2237,7 @@ export default function AdminDashboardPage() {
                         )}
                       </div>
                       <p className="text-zinc-300 line-clamp-2 max-w-3xl">{proj.shortDescription}</p>
-                      
+
                       {/* Icons Preview */}
                       {proj.icons && proj.icons.length > 0 && (
                         <div className="flex flex-wrap items-center gap-1.5 pt-1">

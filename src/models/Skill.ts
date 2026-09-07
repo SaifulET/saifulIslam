@@ -11,7 +11,7 @@ export interface ISkill extends Document {
 
 const SkillSchema = new Schema<ISkill>(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: true, unique: true, trim: true },
     category: { type: String, enum: ["frontend", "backend", "tools"], required: true },
     borderColor: { type: String, default: "#38bdf8" },
     textColor: { type: String, default: "#38bdf8" },

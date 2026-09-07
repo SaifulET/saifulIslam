@@ -1,5 +1,6 @@
 import { connectToDatabase } from "./mongodb";
 import Profile from "../models/Profile";
+import About from "../models/About";
 import Education from "../models/Education";
 import Experience from "../models/Experience";
 import Project from "../models/Project";
@@ -14,27 +15,52 @@ export async function seedDatabase(force = false) {
     if (force) await Profile.deleteMany({});
     await Profile.create({
       name: "Saiful Islam",
-      title: "Full Stack & Distributed Systems Engineer",
+      title: "Junior Fullstack Developer",
       roles: [
-        "Full Stack Developer",
-        "Next.js & React Specialist",
-        "Distributed Systems Architect",
-        "Backend & Cloud Engineer"
+        "Junior Fullstack Developer",
+        "Frontend Engineer",
+        "Backend Specialist",
+        "UI/UX Designer"
       ],
-      bio: "Software Engineer passionate about crafting high-performance full-stack web applications, microservices, and interactive developer experiences. Striving to never stop learning and improving.",
-      location: "Dhaka, Bangladesh",
-      email: "saifulislam3412883@gmail.com",
+      bio: "Software Engineer passionate about crafting high-performance full-stack web applications, microservices, and interactive developer experiences.",
+      aboutTitle: "Junior Fullstack Developer",
+      aboutDescription: "I'm a passionate front-end developer with a keen eye for design and a dedication to creating intuitive, engaging user experiences. With a background in both design and development, I bridge the gap between aesthetics and functionality. My journey in web development started 5 years ago, and I've been in love with crafting digital experiences ever since. I specialize in building responsive, accessible websites and applications that not only look great but perform exceptionally well. When I'm not coding, you can find me exploring new design trends, contributing to open-source projects, or hiking in the mountains to recharge my creative batteries.",
+      aboutImage: "/images/about-me.png",
+      location: "Jatrabari, Dhaka",
+      email: "si912999@gmail.com",
+      phone: "01707961402",
+      githubUrl: "https://github.com/saifulislam",
+      linkedinUrl: "https://linkedin.com/in/saifulislam",
       resumeUrl: "https://drive.google.com/file/d/example/view",
       availableForHire: true,
       socialLinks: [
         { platform: "GitHub", url: "https://github.com/saifulislam", iconName: "Github" },
         { platform: "LinkedIn", url: "https://linkedin.com/in/saifulislam", iconName: "Linkedin" },
         { platform: "Twitter / X", url: "https://x.com/saifulislam", iconName: "Twitter" },
-        { platform: "Email", url: "mailto:saifulislam3412883@gmail.com", iconName: "Mail" }
+        { platform: "Email", url: "mailto:si912999@gmail.com", iconName: "Mail" }
       ],
-      avatarUrl: "/icons/ai.png"
+      avatarUrl: "/images/about-me.png"
     });
     console.log("🌱 Profile seeded");
+  }
+
+  const aboutCount = await About.countDocuments();
+  if (aboutCount === 0 || force) {
+    if (force) await About.deleteMany({});
+    await About.insertMany([
+      {
+        title: "Junior Fullstack Developer",
+        description: "I'm a passionate front-end developer with a keen eye for design and a dedication to creating intuitive, engaging user experiences. With a background in both design and development, I bridge the gap between aesthetics and functionality. My journey in web development started 5 years ago, and I've been in love with crafting digital experiences ever since. I specialize in building responsive, accessible websites and applications that not only look great but perform exceptionally well. When I'm not coding, you can find me exploring new design trends, contributing to open-source projects, or hiking in the mountains to recharge my creative batteries.",
+        image: "/images/about-me.png",
+        name: "Saiful Islam",
+        location: "Jatrabari, Dhaka",
+        email: "si912999@gmail.com",
+        phone: "01707961402",
+        showDetails: true,
+        order: 1
+      }
+    ]);
+    console.log("🌱 About section seeded");
   }
 
   const eduCount = await Education.countDocuments();
@@ -273,29 +299,32 @@ export async function seedDatabase(force = false) {
   if (skillsCount === 0 || force) {
     if (force) await Skill.deleteMany({});
     await Skill.insertMany([
-      // FRONTEND (7)
-      { name: "HTML", category: "frontend", borderColor: "#e44d26", textColor: "#e44d26", iconPath: "/icons/text.png", order: 1 },
-      { name: "CSS", category: "frontend", borderColor: "#1572b6", textColor: "#38bdf8", iconPath: "/icons/css-file.png", order: 2 },
+      // FRONTEND
+      { name: "HTML", category: "frontend", borderColor: "#e44d26", textColor: "#e44d26", iconPath: "/icons/html.svg", order: 1 },
+      { name: "CSS", category: "frontend", borderColor: "#1572b6", textColor: "#38bdf8", iconPath: "/icons/css.svg", order: 2 },
       { name: "JavaScript", category: "frontend", borderColor: "#f7df1e", textColor: "#facc15", iconPath: "/icons/JavaScript.svg", order: 3 },
-      { name: "Tailwind CSS", category: "frontend", borderColor: "#06b6d4", textColor: "#22d3ee", iconPath: "/icons/Tailwind CSS.svg", order: 4 },
-      { name: "Next.js", category: "frontend", borderColor: "#ffffff", textColor: "#ffffff", iconPath: "/icons/nextjs.svg", order: 5 },
-      { name: "Redux", category: "frontend", borderColor: "#764abc", textColor: "#c084fc", iconPath: "/icons/Redux.svg", order: 6 },
-      { name: "Zustand", category: "frontend", borderColor: "#d97706", textColor: "#fbbf24", iconPath: "/icons/zustend.png", order: 7 },
+      { name: "TypeScript", category: "frontend", borderColor: "#3178c6", textColor: "#60a5fa", iconPath: "/icons/typescript.svg", order: 4 },
+      { name: "React", category: "frontend", borderColor: "#61dafb", textColor: "#38bdf8", iconPath: "/icons/react.svg", order: 5 },
+      { name: "Next.js", category: "frontend", borderColor: "#ffffff", textColor: "#ffffff", iconPath: "/icons/nextjs.svg", order: 6 },
+      { name: "Tailwind CSS", category: "frontend", borderColor: "#06b6d4", textColor: "#22d3ee", iconPath: "/icons/Tailwind CSS.svg", order: 7 },
+      { name: "Redux", category: "frontend", borderColor: "#764abc", textColor: "#c084fc", iconPath: "/icons/Redux.svg", order: 8 },
+      { name: "Zustand", category: "frontend", borderColor: "#d97706", textColor: "#fbbf24", iconPath: "/icons/zustend.png", order: 9 },
 
-      // BACKEND (7)
-      { name: "Node.js", category: "backend", borderColor: "#22c55e", textColor: "#4ade80", iconPath: "/icons/nodejs.png", order: 8 },
-      { name: "Express.js", category: "backend", borderColor: "#cbd5e1", textColor: "#e2e8f0", iconPath: "/icons/expressjs.png", order: 9 },
-      { name: "C++", category: "backend", borderColor: "#00599c", textColor: "#60a5fa", iconPath: "/icons/C++ (CPlusPlus).svg", order: 10 },
-      { name: "MongoDB", category: "backend", borderColor: "#13aa52", textColor: "#34d399", iconPath: "/icons/MongoDB.svg", order: 11 },
-      { name: "Redis", category: "backend", borderColor: "#dc2626", textColor: "#ef4444", iconPath: "/icons/Redis.svg", order: 12 },
-      { name: "RabbitMQ", category: "backend", borderColor: "#ff6600", textColor: "#fb923c", iconPath: "/icons/RabbitMQ.svg", order: 13 },
-      { name: "Database", category: "backend", borderColor: "#3b82f6", textColor: "#60a5fa", iconPath: "/icons/database.png", order: 14 },
+      // BACKEND
+      { name: "Node.js", category: "backend", borderColor: "#22c55e", textColor: "#4ade80", iconPath: "/icons/nodejs.png", order: 10 },
+      { name: "Express.js", category: "backend", borderColor: "#cbd5e1", textColor: "#e2e8f0", iconPath: "/icons/express.svg", order: 11 },
+      { name: "C++", category: "backend", borderColor: "#00599c", textColor: "#60a5fa", iconPath: "/icons/C++ (CPlusPlus).svg", order: 12 },
+      { name: "MongoDB", category: "backend", borderColor: "#13aa52", textColor: "#34d399", iconPath: "/icons/MongoDB.svg", order: 13 },
+      { name: "Redis", category: "backend", borderColor: "#dc2626", textColor: "#ef4444", iconPath: "/icons/Redis.svg", order: 14 },
+      { name: "RabbitMQ", category: "backend", borderColor: "#ff6600", textColor: "#fb923c", iconPath: "/icons/RabbitMQ.svg", order: 15 },
+      { name: "JWT", category: "backend", borderColor: "#d63aff", textColor: "#e879f9", iconPath: "/icons/jwt.svg", order: 16 },
+      { name: "Database", category: "backend", borderColor: "#3b82f6", textColor: "#60a5fa", iconPath: "/icons/database.png", order: 17 },
 
-      // TOOLS & DEVOPS (4)
-      { name: "Git", category: "tools", borderColor: "#f05032", textColor: "#f87171", iconPath: "/icons/Git.svg", order: 15 },
-      { name: "Docker", category: "tools", borderColor: "#0db7ed", textColor: "#38bdf8", iconPath: "/icons/social.png", order: 16 },
-      { name: "AWS", category: "tools", borderColor: "#ff9900", textColor: "#fbbf24", iconPath: "/icons/AWS.svg", order: 17 },
-      { name: "Postman", category: "tools", borderColor: "#ff6c37", textColor: "#fb923c", iconPath: "/icons/Postman.svg", order: 18 },
+      // TOOLS & DEVOPS
+      { name: "Git", category: "tools", borderColor: "#f05032", textColor: "#f87171", iconPath: "/icons/Git.svg", order: 18 },
+      { name: "Docker", category: "tools", borderColor: "#0db7ed", textColor: "#38bdf8", iconPath: "/icons/docker.svg", order: 19 },
+      { name: "AWS", category: "tools", borderColor: "#ff9900", textColor: "#fbbf24", iconPath: "/icons/AWS.svg", order: 20 },
+      { name: "Postman", category: "tools", borderColor: "#ff6c37", textColor: "#fb923c", iconPath: "/icons/Postman.svg", order: 21 },
     ]);
     console.log("🌱 Skills seeded");
   }

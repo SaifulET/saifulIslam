@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
-import Skill from "@/models/Skill";
+import About from "@/models/About";
 
 export async function PUT(
   req: Request,
@@ -10,19 +10,12 @@ export async function PUT(
     const { id } = await params;
     await connectToDatabase();
     const data = await req.json();
-    if (data.name) {
-      data.name = data.name.trim();
-      const existing = await Skill.findOne({ _id: { $ne: id }, name: { $regex: new RegExp(`^${data.name}$`, "i") } });
-      if (existing) {
-        return NextResponse.json({ error: `A skill named "${data.name}" already exists.` }, { status: 400 });
-      }
+    if (data.title === undefined || data.title === null) {
+      data.title = "";
     }
-    const updated = await Skill.findByIdAndUpdate(id, data, { new: true });
+    const updated = await About.findByIdAndUpdate(id, data, { new: true });
     return NextResponse.json(updated);
   } catch (error: any) {
-    if (error.code === 11000) {
-      return NextResponse.json({ error: "Skill name must be unique." }, { status: 400 });
-    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -34,7 +27,7 @@ export async function DELETE(
   try {
     const { id } = await params;
     await connectToDatabase();
-    await Skill.findByIdAndDelete(id);
+    await About.findByIdAndDelete(id);
     return NextResponse.json({ success: true, message: "Deleted successfully" });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

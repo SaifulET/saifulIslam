@@ -1,7 +1,14 @@
 import mongoose from "mongoose";
+import dns from "dns";
+
+// Fix querySrv ECONNREFUSED error on Windows / local ISP DNS when resolving mongodb+srv://
+try {
+  dns.setServers(["8.8.8.8", "1.1.1.1", "8.8.4.4"]);
+} catch {
+  // Ignore in environments where setting DNS servers is restricted
+}
 
 const DEFAULT_ATLAS_URI = "mongodb+srv://saifulislam3412883:Saiful123abc@cluster0.o0z9upq.mongodb.net/portfolio";
-// const DEFAULT_ATLAS_URI = "mongodb://localhost:27017/portfolio";
 
 function getMongoUri(): string {
   const envUri = (process.env.MONGODB_URI || "").trim().replace(/^["']|["']$/g, "");

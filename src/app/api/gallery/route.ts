@@ -1,16 +1,11 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import GalleryImage from "@/models/GalleryImage";
-import { seedDatabase } from "@/lib/seed";
 
 export async function GET() {
   try {
     await connectToDatabase();
-    let gallery = await GalleryImage.find().sort({ order: 1, createdAt: -1 });
-    if (gallery.length === 0) {
-      await seedDatabase();
-      gallery = await GalleryImage.find().sort({ order: 1, createdAt: -1 });
-    }
+    const gallery = await GalleryImage.find().sort({ order: 1, createdAt: -1 });
     return NextResponse.json(gallery);
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
