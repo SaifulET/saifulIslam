@@ -146,6 +146,11 @@ export async function seedDatabase(force = false) {
       {
         title: "Libra",
         image: "/images/libra-preview.svg",
+        images: [
+          "/images/libra-preview.svg",
+          "https://images.unsplash.com/photo-1507842229451-7f01dd8610ad?q=80&w=1200&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=1200&auto=format&fit=crop"
+        ],
         shortDescription: "Libra is a minimal Library Management System built with React, TypeScript, and Redux Toolkit Query, allowing users to view, create, edit, delete, and borrow books without authentication or complex setup.",
         fullDescription: "A minimal and responsive Library Management System engineered with React, TypeScript, and Redux Toolkit Query. Allows seamless management of book inventories, borrow summaries, real-time availability calculations, and instant search.",
         features: [
@@ -177,6 +182,11 @@ export async function seedDatabase(force = false) {
       {
         title: "Betopia Interactive Orbital Engine",
         image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop",
+        images: [
+          "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1200&auto=format&fit=crop"
+        ],
         shortDescription: "Ultra-futuristic cybernetic live showcase featuring orbital particle telemetry, dynamic AI prompt consoles, and flowing neon state animations.",
         fullDescription: "A cutting-edge portfolio experience and interactive engine engineered with Next.js 15, React 19, TypeScript, and Tailwind CSS. Features dynamic physics-based orbital mechanics, custom glowing border light runners, and a matrix background.",
         features: [
@@ -204,6 +214,10 @@ export async function seedDatabase(force = false) {
       {
         title: "Distributed Realtime Event Queue & Broker",
         image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1200&auto=format&fit=crop",
+        images: [
+          "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1200&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=1200&auto=format&fit=crop"
+        ],
         shortDescription: "High-throughput asynchronous message pipeline handling distributed task processing, Redis pub/sub, and dead-letter queues.",
         fullDescription: "An enterprise-grade message queuing system built on C++, Node.js, and RabbitMQ. Features automatic failover clustering, zero-data-loss persistence guarantees, and a real-time monitoring dashboard.",
         features: [
@@ -230,6 +244,10 @@ export async function seedDatabase(force = false) {
       {
         title: "OmniStore Cloud Commerce Platform",
         image: "https://images.unsplash.com/photo-1556742049-0a67e55722c3?q=80&w=1200&auto=format&fit=crop",
+        images: [
+          "https://images.unsplash.com/photo-1556742049-0a67e55722c3?q=80&w=1200&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop"
+        ],
         shortDescription: "Full-stack eCommerce ecosystem with real-time stock synchronisation, Stripe checkout, role-based admin panel, and analytics.",
         fullDescription: "Modern multi-tenant digital storefront featuring instant search indexing, server-rendered product pages, automated invoice generation, and customer management portal.",
         features: [

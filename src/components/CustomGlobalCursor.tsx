@@ -1,10 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function CustomGlobalCursor() {
+  const pathname = usePathname();
   const [position, setPosition] = useState({ x: -100, y: -100 });
   const [isVisible, setIsVisible] = useState(false);
+
+  // Disable custom cursor on admin dashboard
+  const isAdmin = pathname?.startsWith("/admin");
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -25,7 +30,7 @@ export default function CustomGlobalCursor() {
     };
   }, [isVisible]);
 
-  if (!isVisible) return null;
+  if (isAdmin || !isVisible) return null;
 
   return (
     <div

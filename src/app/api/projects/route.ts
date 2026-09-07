@@ -11,7 +11,9 @@ export async function GET(req: Request) {
 
     const query: any = {};
     if (featuredParam === "true") {
-      query.featured = true;
+      query.featured = { $ne: false };
+    } else if (featuredParam === "false") {
+      query.featured = false;
     }
 
     let projects = await Project.find(query).sort({ order: 1, createdAt: -1 });

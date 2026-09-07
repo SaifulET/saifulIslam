@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import TechIcon from "@/components/TechIcon";
 import SocialIcon from "@/components/SocialIcon";
+import { getSafeImageUrl } from "@/lib/imageUtils";
 
 export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState<
@@ -123,6 +124,7 @@ export default function AdminDashboardPage() {
   const [projectForm, setProjectForm] = useState({
     title: "",
     image: "",
+    images: "",
     shortDescription: "",
     fullDescription: "",
     features: "",
@@ -567,6 +569,9 @@ export default function AdminDashboardPage() {
       setLoading(true);
       const payload = {
         ...projectForm,
+        images: projectForm.images
+          ? projectForm.images.split(/[\n,]/).map((s) => s.trim()).filter(Boolean)
+          : [],
         features: projectForm.features
           ? projectForm.features.split("\n").map((s) => s.trim()).filter(Boolean)
           : [],
@@ -608,6 +613,7 @@ export default function AdminDashboardPage() {
     setProjectForm({
       title: proj.title || "",
       image: proj.image || "",
+      images: Array.isArray(proj.images) ? proj.images.join("\n") : (proj.images || ""),
       shortDescription: proj.shortDescription || "",
       fullDescription: proj.fullDescription || "",
       features: Array.isArray(proj.features) ? proj.features.join("\n") : "",
@@ -628,6 +634,7 @@ export default function AdminDashboardPage() {
     setProjectForm({
       title: "",
       image: "",
+      images: "",
       shortDescription: "",
       fullDescription: "",
       features: "",
@@ -652,6 +659,29 @@ export default function AdminDashboardPage() {
       fetchAllData();
     } catch (err: any) {
       notify("error", err.message);
+    }
+  };
+
+  // TOGGLE PROJECT FEATURED STATUS (1-CLICK VISIBILITY)
+  const handleToggleProjectFeatured = async (proj: any) => {
+    try {
+      setLoading(true);
+      const newFeatured = proj.featured === false ? true : false;
+      const res = await fetch(`/api/projects/${proj._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ featured: newFeatured }),
+      });
+      if (res.ok) {
+        notify("success", newFeatured ? `"${proj.title}" is now visible on Home Page!` : `"${proj.title}" hidden from Home Page!`);
+        fetchAllData();
+      } else {
+        notify("error", "Failed to update visibility");
+      }
+    } catch (err: any) {
+      notify("error", err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -2082,6 +2112,104 @@ export default function AdminDashboardPage() {
                     />
                   </div>
 
+                  {/* Multiple Slider Images for Expand Modal Slider */}
+                  <div className="space-y-2 sm:col-span-2 p-4 rounded-2xl bg-zinc-950/60 border border-purple-900/30">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-mono font-bold text-purple-300 flex items-center gap-1.5">
+                        <ImageIcon className="w-3.5 h-3.5 text-purple-400" />
+                        <span>Project Slider Images (Multiple Screenshots for Expand Modal Slider)</span>
+                      </label>
+                      <span className="text-[11px] text-zinc-400 font-normal">One per line or comma-separated</span>
+                    </div>
+
+                    <textarea
+                      rows={3}
+                      placeholder={"/projectimg/wardrop.png\n/projectimg/salon.png\n/projectimg/uber.png\nhttps://example.com/screenshot.png"}
+                      value={projectForm.images}
+                      onChange={(e) => setProjectForm({ ...projectForm, images: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs sm:text-sm text-white font-mono resize-none focus:border-purple-500 focus:outline-none"
+                    />
+
+                    {/* Quick Add Available Local Images */}
+                    <div className="space-y-1.5 pt-1">
+                      <span className="text-[11px] text-zinc-400 font-mono">Quick Click to Add Local Screenshot:</span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {[
+                          "/projectimg/wardrop.png",
+                          "/projectimg/salon.png",
+                          "/projectimg/uber.png",
+                          "/projectimg/bookly.png",
+                          "/projectimg/blueStar.png",
+                          "/projectimg/smokenza.png",
+                          "/projectimg/shahalam.png",
+                        ].map((imgPath) => (
+                          <button
+                            key={imgPath}
+                            type="button"
+                            onClick={() => {
+                              const current = projectForm.images
+                                ? projectForm.images.split(/[\n,]/).map((s) => s.trim()).filter(Boolean)
+                                : [];
+                              if (!current.includes(imgPath)) {
+                                setProjectForm({
+                                  ...projectForm,
+                                  images: [...current, imgPath].join("\n"),
+                                });
+                              }
+                            }}
+                            className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-purple-950 hover:border-purple-500/50 border border-zinc-800 text-[11px] font-mono text-zinc-300 transition-all hover:scale-105 cursor-pointer"
+                          >
+                            + {imgPath.replace("/projectimg/", "")}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <p className="text-[11px] text-zinc-400">
+                      Add multiple image paths or URLs (one per line or comma-separated). When more than 1 image is added, visitors can slide through them in the expanded project modal using the left/right arrow buttons, keyboard arrows, or clickable thumbnails.
+                    </p>
+
+                    {/* Live Thumbnail Preview with 1-Click Delete */}
+                    {projectForm.images && projectForm.images.trim() && (
+                      <div className="pt-2 border-t border-zinc-900 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[11px] text-zinc-400 font-mono">
+                            Slide Screenshots ({projectForm.images.split(/[\n,]/).map((s) => s.trim()).filter(Boolean).length}):
+                          </span>
+                          <span className="text-[10px] text-zinc-500 font-mono">Hover to remove</span>
+                        </div>
+                        <div className="flex flex-wrap gap-2.5 pt-1">
+                          {projectForm.images.split(/[\n,]/).map((s) => s.trim()).filter(Boolean).map((imgUrl, i) => (
+                            <div key={i} className="relative w-16 h-12 rounded-lg overflow-hidden border border-purple-500/40 bg-zinc-900 shrink-0 group/thumb">
+                              <img src={getSafeImageUrl(imgUrl)} alt={`Slide ${i + 1}`} className="w-full h-full object-cover" />
+                              <span className="absolute bottom-0 right-0 px-1 py-0.2 text-[9px] bg-black/80 font-mono text-purple-300 font-bold rounded-tl">
+                                {i + 1}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const current = projectForm.images
+                                    .split(/[\n,]/)
+                                    .map((s) => s.trim())
+                                    .filter(Boolean);
+                                  const filtered = current.filter((_, idx) => idx !== i);
+                                  setProjectForm({
+                                    ...projectForm,
+                                    images: filtered.join("\n"),
+                                  });
+                                }}
+                                className="absolute inset-0 bg-black/70 opacity-0 group-hover/thumb:opacity-100 flex items-center justify-center text-red-400 hover:text-red-300 transition-opacity cursor-pointer"
+                                title="Remove this screenshot"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
                   {/* Bullet Points / Features (Each line = 1 bullet point) */}
                   <div className="space-y-1 sm:col-span-2">
                     <label className="text-xs font-mono font-bold text-purple-300 flex items-center justify-between">
@@ -2159,15 +2287,20 @@ export default function AdminDashboardPage() {
                     )}
                   </div>
 
-                  <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-white sm:col-span-2">
+                  <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-white sm:col-span-2 select-none">
                     <input
                       type="checkbox"
                       id="featured"
                       checked={projectForm.featured}
                       onChange={(e) => setProjectForm({ ...projectForm, featured: e.target.checked })}
-                      className="w-4 h-4 rounded text-purple-600"
+                      className="w-4 h-4 rounded text-purple-600 bg-zinc-800 border-zinc-700 cursor-pointer focus:ring-purple-500"
                     />
-                    <label htmlFor="featured">Show on Home Page (Featured Section)</label>
+                    <label htmlFor="featured" className="cursor-pointer font-semibold flex items-center gap-2">
+                      <span>Show on Home Page (Featured Section)</span>
+                      <span className="text-[11px] text-zinc-400 font-normal">
+                        ({projectForm.featured ? "Visible in Home Featured list" : "Hidden from Home, only shown in All Projects"})
+                      </span>
+                    </label>
                   </div>
 
                   <div className="space-y-1 sm:col-span-2">
@@ -2198,7 +2331,7 @@ export default function AdminDashboardPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-md transition-all hover:scale-105 flex items-center gap-2"
+                    className="px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-md transition-all hover:scale-105 flex items-center gap-2 cursor-pointer"
                   >
                     <Save className="w-4 h-4" />
                     <span>{editingProjectId ? "Update Project" : "Save Project"}</span>
@@ -2207,7 +2340,7 @@ export default function AdminDashboardPage() {
                     <button
                       type="button"
                       onClick={handleCancelEditProject}
-                      className="px-4 py-2.5 rounded-xl bg-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold"
+                      className="px-4 py-2.5 rounded-xl bg-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold cursor-pointer"
                     >
                       Cancel
                     </button>
@@ -2230,9 +2363,15 @@ export default function AdminDashboardPage() {
                     <div className="space-y-2 text-xs flex-1">
                       <div className="flex items-center gap-2.5">
                         <span className="text-purple-400 font-bold text-sm sm:text-base">{proj.title}</span>
-                        {proj.featured && (
-                          <span className="px-2 py-0.5 rounded-md bg-purple-950 border border-purple-500/40 text-purple-300 text-[10px] font-mono font-bold">
-                            FEATURED
+                        {proj.featured !== false ? (
+                          <span className="px-2.5 py-0.5 rounded-full bg-purple-950 border border-purple-500/40 text-purple-300 text-[10px] font-mono font-bold flex items-center gap-1">
+                            <Eye className="w-3 h-3 text-purple-400" />
+                            FEATURED ON HOME
+                          </span>
+                        ) : (
+                          <span className="px-2.5 py-0.5 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-400 text-[10px] font-mono font-bold flex items-center gap-1">
+                            <EyeOff className="w-3 h-3 text-zinc-500" />
+                            HIDDEN FROM HOME
                           </span>
                         )}
                       </div>
@@ -2262,14 +2401,34 @@ export default function AdminDashboardPage() {
                         {proj.features?.length > 0 && (
                           <span className="text-zinc-400">• {proj.features.length} bullet points</span>
                         )}
+                        {Array.isArray(proj.images) && proj.images.length > 0 && (
+                          <span className="text-purple-400 flex items-center gap-1 font-mono">
+                            <ImageIcon className="w-3 h-3" /> {proj.images.length} slide images
+                          </span>
+                        )}
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 self-end sm:self-center">
+                    <div className="flex items-center gap-2 self-end sm:self-center flex-wrap">
+                      {/* 1-Click Toggle Featured Button */}
+                      <button
+                        type="button"
+                        onClick={() => handleToggleProjectFeatured(proj)}
+                        className={`px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+                          proj.featured !== false
+                            ? "bg-purple-950/60 border-purple-500/40 text-purple-300 hover:bg-purple-900/80"
+                            : "bg-zinc-800/90 border-zinc-700 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700"
+                        }`}
+                        title="Toggle visibility on Home Page"
+                      >
+                        {proj.featured !== false ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                        <span>{proj.featured !== false ? "Visible on Home" : "Hidden from Home"}</span>
+                      </button>
+
                       <button
                         type="button"
                         onClick={() => handleEditProject(proj)}
-                        className="px-3 py-1.5 rounded-xl bg-purple-950/60 border border-purple-500/40 text-purple-300 hover:bg-purple-900/80 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                        className="px-3 py-1.5 rounded-xl bg-zinc-800 border border-zinc-700 text-zinc-200 hover:text-white hover:bg-zinc-700 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
                       >
                         <Edit3 className="w-3.5 h-3.5" />
                         <span>Edit</span>
@@ -2277,7 +2436,7 @@ export default function AdminDashboardPage() {
                       <button
                         type="button"
                         onClick={() => handleDeleteProject(proj._id)}
-                        className="p-2 rounded-xl text-red-400 hover:bg-red-950/60 transition-colors"
+                        className="p-2 rounded-xl text-red-400 hover:bg-red-950/60 transition-colors cursor-pointer"
                         title="Delete project"
                       >
                         <Trash2 className="w-4 h-4" />

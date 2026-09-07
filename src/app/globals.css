@@ -29,15 +29,11 @@
   --section-alt: #f1f5f9;
 }
 
-/* Site-wide Custom Cursor & Smooth Scroll Offset */
+/* Site-wide Smooth Scroll Offset */
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
   scroll-padding-bottom: 6rem;
-}
-
-html, body, button, a, input, select, textarea, [role="button"] {
-  cursor: none !important;
 }
 
 body {

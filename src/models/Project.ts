@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IProject extends Document {
   title: string;
   image: string;
+  images?: string[];
   shortDescription: string;
   fullDescription: string;
   features: string[];
@@ -21,6 +22,7 @@ const ProjectSchema = new Schema<IProject>(
   {
     title: { type: String, required: true },
     image: { type: String, required: true },
+    images: { type: [String], default: [] },
     shortDescription: { type: String, required: true },
     fullDescription: { type: String, default: "" },
     features: { type: [String], default: [] },
@@ -36,5 +38,9 @@ const ProjectSchema = new Schema<IProject>(
   },
   { timestamps: true }
 );
+
+if (mongoose.models.Project && !mongoose.models.Project.schema.paths["images"]) {
+  delete mongoose.models.Project;
+}
 
 export default mongoose.models.Project || mongoose.model<IProject>("Project", ProjectSchema);
