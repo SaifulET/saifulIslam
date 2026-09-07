@@ -92,10 +92,10 @@ export default function AboutSection() {
       id="about"
       className="relative py-20 pb-28 sm:pb-20 scroll-mt-20 bg-slate-50 dark:bg-[#070612] text-slate-900 dark:text-white border-b border-slate-200 dark:border-zinc-800/80 transition-colors duration-300"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* SECTION HEADER */}
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center mb-12">
           <div className="flex items-center gap-3 text-2xl sm:text-3xl font-extrabold tracking-wider text-slate-900 dark:text-white uppercase">
             <User className="w-7 h-7 sm:w-8 sm:h-8 text-slate-900 dark:text-white" />
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-wider uppercase">
@@ -105,6 +105,7 @@ export default function AboutSection() {
         </div>
 
         {/* SECTIONS LIST (Supports 1, 2, or multiple sections) */}
+        <div className="space-y-12 max-w-6xl mx-auto">
         {sectionsToRender.map((section, idx) => {
           const imageSrc = getSafeImageUrl(section.image || "/images/about-me.png", "/images/about-me.png");
           const isFirst = idx === 0;
@@ -318,6 +319,7 @@ export default function AboutSection() {
             </div>
           );
         })}
+        </div>
 
       </div>
     </section>

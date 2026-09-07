@@ -118,7 +118,7 @@ export default function ContactSection() {
     : (profile.linkedinUrl ? [{ platform: "LinkedIn", url: profile.linkedinUrl, iconName: "Linkedin", showInContact: true }] : []);
 
   return (
-    <section id="contact" className="relative py-16 sm:py-20 scroll-mt-20 bg-slate-50 dark:bg-[#070612] text-slate-900 dark:text-white border-b border-slate-200 dark:border-zinc-800/80 transition-colors duration-300">
+    <section id="contact" className="relative py-20 pb-28 sm:pb-20 scroll-mt-20 bg-slate-50 dark:bg-[#070612] text-slate-900 dark:text-white border-b border-slate-200 dark:border-zinc-800/80 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* SECTION HEADER */}

@@ -43,7 +43,7 @@ export default function ExperienceSection({ initialData }: { initialData?: Exper
         </div>
 
         {/* TIMELINE CARDS */}
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="max-w-6xl mx-auto space-y-8">
           {experiences.map((exp, index) => (
             <div
               key={exp._id || index}

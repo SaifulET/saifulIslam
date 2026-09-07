@@ -39,15 +39,21 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = navItems.map((item) => item.id);
-      const scrollY = window.scrollY + 200;
+      // Check if scrolled near bottom of page
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 60) {
+        setActiveSection("contact");
+        return;
+      }
 
-      for (const sectionId of sections) {
+      const sections = navItems.map((item) => item.id);
+      const scrollY = window.scrollY + 180;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const sectionId = sections[i];
         const el = document.getElementById(sectionId);
         if (el) {
           const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollY >= top && scrollY < top + height) {
+          if (scrollY >= top) {
             setActiveSection(sectionId);
             break;
           }

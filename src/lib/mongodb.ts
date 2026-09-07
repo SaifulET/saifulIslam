@@ -1,24 +1,24 @@
 import mongoose from "mongoose";
 import dns from "dns";
 
-// Fix querySrv ECONNREFUSED error on Windows / local ISP DNS when resolving mongodb+srv://
+// Configure public DNS servers to resolve MongoDB SRV records reliably
 try {
   dns.setServers(["8.8.8.8", "1.1.1.1", "8.8.4.4"]);
 } catch {
-  // Ignore in environments where setting DNS servers is restricted
+  // Ignore in environments where setting custom DNS is restricted
 }
 
-const DEFAULT_ATLAS_URI = "mongodb+srv://saifulislam3412883:Saiful123abc@cluster0.o0z9upq.mongodb.net/portfolio";
+// Direct 3-node MongoDB Atlas replica set URI (bypasses Windows / ISP SRV DNS lookup issues)
+const DIRECT_REPLICA_URI =
+  "mongodb://saifulislam3412883:Saiful123abc@ac-pgo0shx-shard-00-00.o0z9upq.mongodb.net:27017,ac-pgo0shx-shard-00-01.o0z9upq.mongodb.net:27017,ac-pgo0shx-shard-00-02.o0z9upq.mongodb.net:27017/portfolio?ssl=true&replicaSet=atlas-3ihs4e-shard-0&authSource=admin&retryWrites=true&w=majority";
 
 function getMongoUri(): string {
   const envUri = (process.env.MONGODB_URI || "").trim().replace(/^["']|["']$/g, "");
   if (envUri && (envUri.startsWith("mongodb://") || envUri.startsWith("mongodb+srv://"))) {
     return envUri;
   }
-  return DEFAULT_ATLAS_URI;
+  return DIRECT_REPLICA_URI;
 }
-
-const MONGODB_URI = getMongoUri();
 
 interface MongooseCache {
   conn: typeof mongoose | null;
@@ -30,14 +30,14 @@ declare global {
   var mongooseCache: MongooseCache | undefined;
 }
 
-let cached: MongooseCache = global.mongooseCache || { conn: null, promise: null };
+const cached: MongooseCache = global.mongooseCache || { conn: null, promise: null };
 
 if (!global.mongooseCache) {
   global.mongooseCache = cached;
 }
 
 export async function connectToDatabase(): Promise<typeof mongoose> {
-  if (cached.conn) {
+  if (cached.conn && mongoose.connection.readyState === 1) {
     return cached.conn;
   }
 
@@ -49,10 +49,23 @@ export async function connectToDatabase(): Promise<typeof mongoose> {
 
     const targetUri = getMongoUri();
 
-    cached.promise = mongoose.connect(targetUri, opts).then((m) => {
-      console.log("✅ Connected to MongoDB Atlas successfully");
-      return m;
-    });
+    cached.promise = mongoose
+      .connect(targetUri, opts)
+      .then((m) => {
+        console.log("✅ Connected to MongoDB Atlas successfully");
+        return m;
+      })
+      .catch(async (err) => {
+        // If SRV lookup failed (querySrv ECONNREFUSED), automatically fallback to direct replica set URI
+        if (targetUri.startsWith("mongodb+srv://") && String(err).includes("querySrv")) {
+          console.warn("⚠️ SRV DNS resolution failed. Retrying with direct MongoDB Atlas replica set URI...");
+          return mongoose.connect(DIRECT_REPLICA_URI, opts).then((m) => {
+            console.log("✅ Connected to MongoDB Atlas via Direct Replica Set successfully");
+            return m;
+          });
+        }
+        throw err;
+      });
   }
 
   try {

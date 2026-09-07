@@ -45,7 +45,7 @@ export default function EducationSection({ initialData }: { initialData?: Educat
         </div>
 
         {/* EDUCATION CARDS GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-6xl mx-auto">
           {educationList.map((item) => (
             <Link
               key={item._id}

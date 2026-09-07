@@ -84,10 +84,10 @@ switch(charmingtaker) {
         </div>
       </div>
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* SECTION HEADER: LUCIDE CPU ICON + SKILLS */}
-        <div className="flex items-center justify-center mb-10">
+        <div className="flex items-center justify-center mb-12">
           <div className="flex items-center gap-3 text-2xl sm:text-3xl font-extrabold tracking-wider text-slate-900 dark:text-white uppercase">
             <Cpu className="w-7 h-7 sm:w-8 sm:h-8 text-slate-900 dark:text-white" />
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-wider uppercase">
@@ -127,7 +127,7 @@ switch(charmingtaker) {
         </div>
 
         {/* UNIFIED GRID VIEW (18 SKILLS) */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5 sm:gap-4 max-w-5xl mx-auto animate-in fade-in duration-300">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-5 max-w-6xl mx-auto animate-in fade-in duration-300">
           {filteredSkills.map((skill, index) => (
             <div
               key={skill._id || `${skill.name}-${index}`}
