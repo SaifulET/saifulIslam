@@ -8,10 +8,6 @@ import ProjectsSection from "@/components/ProjectsSection";
 import ImageGallerySection from "@/components/ImageGallerySection";
 import SkillsSection from "@/components/SkillsSection";
 import ContactSection from "@/components/ContactSection";
-import AgentPromptShowcase from "@/components/AgentPromptShowcase";
-import DayNightToggleShowcase from "@/components/DayNightToggleShowcase";
-import AddToCartDemoSection from "@/components/AddToCartDemoSection";
-import PremiumFeatureShowcase from "@/components/PremiumFeatureShowcase";
 import Link from "next/link";
 import { Sparkles, Heart } from "lucide-react";
 
@@ -34,18 +30,6 @@ export default function Home() {
 
         {/* PROJECTS SECTION */}
         <ProjectsSection isAllPage={false} />
-
-        {/* AI AGENT PROMPT COMPOSER SHOWCASE */}
-        <AgentPromptShowcase />
-
-        {/* DAY & NIGHT ATMOSPHERIC TOGGLE SHOWCASE */}
-        <DayNightToggleShowcase />
-
-        {/* PREMIUM ADD TO CART BUTTON SHOWCASE */}
-        <AddToCartDemoSection />
-
-        {/* PREMIUM LIQUID FEATURE CARD SHOWCASE */}
-        <PremiumFeatureShowcase />
 
         {/* SKILLS SECTION (Positioned right after Projects) */}
         <SkillsSection />
