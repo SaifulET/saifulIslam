@@ -14,6 +14,7 @@ import {
   Moon
 } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
+import DayNightToggle from "./DayNightToggle";
 
 interface NavItem {
   id: string;
@@ -23,7 +24,7 @@ interface NavItem {
 }
 
 export default function Navbar() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, setTheme, toggleTheme } = useTheme();
   const [activeSection, setActiveSection] = useState("home");
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
@@ -111,20 +112,17 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* RIGHT CONTROLS: THEME TOGGLE */}
+          {/* RIGHT CONTROLS: ATMOSPHERIC DAY / NIGHT TOGGLE */}
           <div className="flex items-center gap-2.5">
-            {/* Dark / Light Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              aria-label="Toggle Theme"
-              className="p-2 rounded-xl bg-slate-100 dark:bg-zinc-900/80 border border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white transition-all hover:scale-105 shadow-sm cursor-pointer"
-            >
-              {theme === "dark" ? (
-                <Sun className="w-4 h-4 text-amber-400 animate-in spin-in-90" />
-              ) : (
-                <Moon className="w-4 h-4 text-purple-600 animate-in spin-in-90" />
-              )}
-            </button>
+            <DayNightToggle
+              isNight={theme === "dark"}
+              onToggle={(isNightVal) => setTheme(isNightVal ? "dark" : "light")}
+              size="navbar"
+              showLabel={false}
+              showReflection={false}
+              cloudImg1="/mood/cloud2.png"
+              cloudImg2="/mood/cloud.png"
+            />
           </div>
 
         </div>
