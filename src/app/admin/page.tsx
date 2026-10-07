@@ -39,6 +39,52 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
+  // AUTHENTICATION STATE
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const [loggingIn, setLoggingIn] = useState(false);
+
+  useEffect(() => {
+    const auth = sessionStorage.getItem("admin_auth");
+    if (auth === "true") {
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
+    }
+  }, []);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoggingIn(true);
+    setLoginError("");
+
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        sessionStorage.setItem("admin_auth", "true");
+        setIsAuthenticated(true);
+      } else {
+        setLoginError(data.error || "Invalid admin credentials");
+      }
+    } catch {
+      setLoginError("Failed to authenticate with server");
+    } finally {
+      setLoggingIn(false);
+    }
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("admin_auth");
+    setIsAuthenticated(false);
+  };
+
   // DATA STATES
   const [profile, setProfile] = useState<any>({
     name: "",
@@ -823,6 +869,84 @@ export default function AdminDashboardPage() {
     { id: "messages", label: "Messages Inbox", icon: <Mail className="w-4 h-4" />, count: messagesList.length },
   ];
 
+  if (isAuthenticated === null) {
+    return (
+      <div className="min-h-screen bg-[#07080f] flex items-center justify-center text-white">
+        <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#07080f] flex items-center justify-center p-4 text-white">
+        <div className="w-full max-w-md p-8 rounded-3xl bg-[#0c0d16] border border-purple-500/40 shadow-2xl space-y-6">
+          <div className="text-center space-y-2">
+            <div className="inline-flex p-3 rounded-2xl bg-purple-950/80 border border-purple-500/50 text-purple-400">
+              <ShieldAlert className="w-8 h-8" />
+            </div>
+            <h1 className="text-2xl font-extrabold text-white">Admin Security Portal</h1>
+            <p className="text-xs text-zinc-400">Enter your administrator credentials to access the CMS</p>
+          </div>
+
+          {loginError && (
+            <div className="p-3.5 rounded-xl bg-red-950/60 border border-red-500/50 text-red-300 text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
+              <span>{loginError}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="space-y-1">
+              <label className="text-xs font-mono font-semibold text-zinc-300">Admin Email</label>
+              <input
+                type="email"
+                required
+                value={loginEmail}
+                onChange={(e) => setLoginEmail(e.target.value)}
+                placeholder="admin@odaboo.local"
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-mono font-semibold text-zinc-300">Admin Password</label>
+              <input
+                type="password"
+                required
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+                placeholder="••••••••••••"
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loggingIn}
+              className="w-full py-3 px-4 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-sm transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              {loggingIn ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Authenticating...</span>
+                </>
+              ) : (
+                <span>Access Console</span>
+              )}
+            </button>
+          </form>
+
+          <div className="text-center pt-2">
+            <Link href="/" className="text-xs text-zinc-500 hover:text-purple-400 transition-colors">
+              ← Return to Portfolio Homepage
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#07080f] text-white">
 
@@ -854,7 +978,7 @@ export default function AdminDashboardPage() {
             <button
               onClick={handleSeedDatabase}
               disabled={loading}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white text-xs font-semibold transition-all hover:scale-105"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white text-xs font-semibold transition-all hover:scale-105 cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5 text-amber-400" />
               <span>Reset &amp; Seed Default Data</span>
@@ -867,6 +991,14 @@ export default function AdminDashboardPage() {
               <span>View Portfolio</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </Link>
+
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-950/40 hover:bg-red-900/60 border border-red-800/60 text-red-300 hover:text-white text-xs font-semibold transition-all hover:scale-105 cursor-pointer"
+              title="Sign Out of Admin Console"
+            >
+              <span>Sign Out</span>
+            </button>
           </div>
 
         </div>
