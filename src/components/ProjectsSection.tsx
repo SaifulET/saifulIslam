@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -38,6 +38,143 @@ export interface ProjectItem {
   featured?: boolean;
   order?: number;
 }
+
+const DEFAULT_PROJECTS: ProjectItem[] = [
+  {
+    _id: "libra",
+    title: "Libra",
+    image: "/images/libra-preview.svg",
+    images: [
+      "/images/libra-preview.svg",
+      "https://images.unsplash.com/photo-1507842229451-7f01dd8610ad?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=1200&auto=format&fit=crop"
+    ],
+    shortDescription: "Libra is a minimal Library Management System built with React, TypeScript, and Redux Toolkit Query, allowing users to view, create, edit, delete, and borrow books without authentication or complex setup.",
+    fullDescription: "A minimal and responsive Library Management System engineered with React, TypeScript, and Redux Toolkit Query. Allows seamless management of book inventories, borrow summaries, real-time availability calculations, and instant search.",
+    features: [
+      "View, add, edit, and delete books",
+      "View aggregated borrow summary (book title, ISBN, total quantity)",
+      "Auto-update availability based on copies"
+    ],
+    frontendTech: ["React", "TypeScript", "Tailwind CSS", "Redux Toolkit"],
+    backendTech: ["Node.js", "Express.js", "MongoDB", "JWT"],
+    icons: [
+      "/icons/html.svg",
+      "/icons/css.svg",
+      "/icons/Tailwind CSS.svg",
+      "/icons/typescript.svg",
+      "/icons/react.svg",
+      "/icons/Redux.svg",
+      "/icons/nodejs.png",
+      "/icons/express.svg",
+      "/icons/MongoDB.svg",
+      "/icons/jwt.svg"
+    ],
+    liveUrl: "https://libra-library.vercel.app",
+    githubUrl: "https://github.com/saifulislam/libra-library",
+    githubFrontend: "https://github.com/saifulislam/libra-library-frontend",
+    githubBackend: "https://github.com/saifulislam/libra-library-backend",
+    featured: true,
+    order: 1
+  },
+  {
+    _id: "orbital-engine",
+    title: "Betopia Interactive Orbital Engine",
+    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1200&auto=format&fit=crop"
+    ],
+    shortDescription: "Ultra-futuristic cybernetic live showcase featuring orbital particle telemetry, dynamic AI prompt consoles, and flowing neon state animations.",
+    fullDescription: "A cutting-edge portfolio experience and interactive engine engineered with Next.js 15, React 19, TypeScript, and Tailwind CSS. Features dynamic physics-based orbital mechanics, custom glowing border light runners, and a matrix background.",
+    features: [
+      "Orbital particle telemetry with canvas physics & speed control",
+      "Flowing neon border beam illumination on interactive cards",
+      "Real-time code terminal emulator with multiple syntax tabs"
+    ],
+    frontendTech: ["Next.js", "TypeScript", "Tailwind CSS", "Lucide React"],
+    backendTech: ["Node.js", "MongoDB", "Vercel Edge"],
+    icons: [
+      "/icons/nextjs.svg",
+      "/icons/typescript.svg",
+      "/icons/Tailwind CSS.svg",
+      "/icons/react.svg",
+      "/icons/nodejs.png",
+      "/icons/MongoDB.svg"
+    ],
+    liveUrl: "https://betopia-featured.vercel.app",
+    githubUrl: "https://github.com/saifulislam/orbital-showcase",
+    githubFrontend: "https://github.com/saifulislam/orbital-showcase",
+    githubBackend: "https://github.com/saifulislam/orbital-backend",
+    featured: true,
+    order: 2
+  },
+  {
+    _id: "event-broker",
+    title: "Distributed Realtime Event Queue & Broker",
+    image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1200&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=1200&auto=format&fit=crop"
+    ],
+    shortDescription: "High-throughput asynchronous message pipeline handling distributed task processing, Redis pub/sub, and dead-letter queues.",
+    fullDescription: "An enterprise-grade message queuing system built on C++, Node.js, and RabbitMQ. Features automatic failover clustering, zero-data-loss persistence guarantees, and a real-time monitoring dashboard.",
+    features: [
+      "Sub-millisecond pub/sub message routing with RabbitMQ & Redis",
+      "Dead-letter queue recovery with automated worker retries",
+      "Live telemetry graphs measuring throughput and latency"
+    ],
+    frontendTech: ["React", "Tailwind CSS", "Chart.js"],
+    backendTech: ["C++", "Node.js", "RabbitMQ", "Redis", "Docker"],
+    icons: [
+      "/icons/C++ (CPlusPlus).svg",
+      "/icons/RabbitMQ.svg",
+      "/icons/Redis.svg",
+      "/icons/docker.svg",
+      "/icons/nodejs.png"
+    ],
+    liveUrl: "https://queue-broker-demo.vercel.app",
+    githubUrl: "https://github.com/saifulislam/event-broker-core",
+    githubFrontend: "https://github.com/saifulislam/event-broker-ui",
+    githubBackend: "https://github.com/saifulislam/event-broker-core",
+    featured: true,
+    order: 3
+  },
+  {
+    _id: "omnistore",
+    title: "OmniStore Cloud Commerce Platform",
+    image: "https://images.unsplash.com/photo-1556742049-0a67e55722c3?q=80&w=1200&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1556742049-0a67e55722c3?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop"
+    ],
+    shortDescription: "Full-stack eCommerce ecosystem with real-time stock synchronisation, Stripe checkout, role-based admin panel, and analytics.",
+    fullDescription: "Modern multi-tenant digital storefront featuring instant search indexing, server-rendered product pages, automated invoice generation, and customer management portal.",
+    features: [
+      "Instant elastic search with multi-attribute filtering",
+      "Integrated Stripe payment gateway with webhook verification",
+      "Real-time inventory and analytics management dashboard"
+    ],
+    frontendTech: ["Next.js", "Tailwind CSS", "Redux", "TypeScript"],
+    backendTech: ["Express.js", "MongoDB", "AWS", "Stripe API"],
+    icons: [
+      "/icons/nextjs.svg",
+      "/icons/typescript.svg",
+      "/icons/Tailwind CSS.svg",
+      "/icons/Redux.svg",
+      "/icons/express.svg",
+      "/icons/MongoDB.svg",
+      "/icons/AWS.svg"
+    ],
+    liveUrl: "https://omnistore-demo.vercel.app",
+    githubUrl: "https://github.com/saifulislam/omnistore-web",
+    githubFrontend: "https://github.com/saifulislam/omnistore-web",
+    githubBackend: "https://github.com/saifulislam/omnistore-api",
+    featured: true,
+    order: 4
+  }
+];
 
 function SafeProjectImage({
   src,
@@ -82,21 +219,379 @@ function SafeProjectImage({
   );
 }
 
+/**
+ * Individual Project Card with internal staggered reveal animations:
+ * - Card container reveals
+ * - Left image floats up & expands
+ * - Title, description & highlights slide in
+ * - Tech icons pop in sequentially matching video style
+ * - Action buttons slide in
+ */
+function ProjectCardItem({
+  project,
+  index,
+  onOpenProject,
+}: {
+  project: ProjectItem;
+  index: number;
+  onOpenProject: (p: ProjectItem) => void;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      setIsInView(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsInView(true);
+          } else {
+            // Re-arm animation when user scrolls away
+            setIsInView(false);
+          }
+        });
+      },
+      {
+        threshold: 0.08,
+        rootMargin: "0px 0px -30px 0px",
+      }
+    );
+
+    const el = cardRef.current;
+    if (el) observer.observe(el);
+
+    return () => {
+      if (el) observer.unobserve(el);
+    };
+  }, []);
+
+  const isReversed = index % 2 === 1;
+
+  const techList = project.icons && project.icons.length > 0
+    ? project.icons
+    : (project.frontendTech?.concat(project.backendTech || []) || []);
+
+  return (
+    <div
+      ref={cardRef}
+      className={`w-full ${isInView ? "animate-project-card" : "opacity-0 pointer-events-none"}`}
+    >
+      <div
+        className="group relative rounded-3xl p-[1.5px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-500/15 bg-gradient-to-r from-purple-500/20 via-transparent to-pink-500/20 hover:from-purple-500/60 hover:to-pink-500/60 shadow-xl"
+      >
+        {/* Flowing Border Beam on Hover */}
+        <div
+          className="absolute -inset-[150%] opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-500 will-change-transform"
+          style={{
+            background: `conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 270deg, #c084fc 315deg, #ffffff 352deg, #9333ea 360deg)`,
+            animation: "borderBeam 3.5s linear infinite",
+          }}
+        />
+
+        {/* Inner Card Container */}
+        <div className="relative z-10 rounded-[calc(1.5rem-1.5px)] bg-white dark:bg-[#0c0d16] p-6 sm:p-8 md:p-10 border border-slate-200 dark:border-purple-950/60 transition-colors duration-300">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+
+            {/* MOCKUP IMAGE COLUMN (Zigzag: Left on 1st/3rd, Right on 2nd/4th) */}
+            <div
+              style={{ animationDelay: "100ms" }}
+              className={`lg:col-span-6 ${
+                isReversed ? "lg:order-2" : "lg:order-1"
+              } flex items-center justify-center w-full ${
+                isInView ? "animate-project-image" : "opacity-0"
+              }`}
+            >
+              <div
+                onClick={() => onOpenProject(project)}
+                className="relative w-full h-64 sm:h-72 md:h-80 rounded-2xl overflow-hidden bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 shadow-xl cursor-pointer group/img transition-all duration-500 hover:border-purple-400 hover:shadow-purple-500/20"
+              >
+                <SafeProjectImage
+                  src={project.image}
+                  alt={project.title}
+                  fill
+                  objectFit="cover"
+                  className="p-1 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/img:scale-105"
+                />
+
+                {/* Click overlay pill */}
+                <div className="absolute bottom-3 right-3 px-3 py-1 rounded-full bg-slate-900/80 dark:bg-zinc-950/80 backdrop-blur-md border border-slate-700/80 dark:border-zinc-700/80 text-[11px] font-mono text-white group-hover/img:border-purple-400 group-hover/img:text-purple-300 transition-all duration-300 flex items-center gap-1.5 z-10 shadow-lg group-hover/img:scale-105">
+                  <Maximize2 className="w-3 h-3 text-purple-300" />
+                  <span>Click to Expand</span>
+                </div>
+              </div>
+            </div>
+
+            {/* DETAILS & DESCRIPTION COLUMN (Zigzag: Right on 1st/3rd, Left on 2nd/4th) */}
+            <div
+              className={`lg:col-span-6 ${
+                isReversed ? "lg:order-1" : "lg:order-2"
+              } flex flex-col justify-between space-y-4`}
+            >
+
+              {/* Title */}
+              <div
+                style={{ animationDelay: "180ms" }}
+                className={isInView ? "animate-project-text" : "opacity-0"}
+              >
+                <h3
+                  onClick={() => onOpenProject(project)}
+                  className="text-2xl sm:text-3xl font-extrabold text-purple-700 dark:text-[#c084fc] hover:text-purple-600 dark:hover:text-purple-300 transition-colors cursor-pointer tracking-tight"
+                >
+                  {project.title}
+                </h3>
+              </div>
+
+              {/* Short Description */}
+              <div
+                style={{ animationDelay: "240ms" }}
+                className={isInView ? "animate-project-text" : "opacity-0"}
+              >
+                <p className="text-slate-600 dark:text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                  {project.shortDescription}
+                </p>
+              </div>
+
+              {/* Key Highlights (Top 3 on initial card view) */}
+              {project.features && project.features.length > 0 && (
+                <div
+                  style={{ animationDelay: "300ms" }}
+                  className={`space-y-1.5 ${isInView ? "animate-project-text" : "opacity-0"}`}
+                >
+                  <ul className="space-y-2 text-xs sm:text-sm text-slate-700 dark:text-zinc-300">
+                    {project.features.slice(0, 3).map((feature, i) => (
+                      <li key={i} className="flex items-start gap-2.5">
+                        <span className="text-purple-600 dark:text-purple-400 font-bold text-base leading-none mt-0.5">•</span>
+                        <span className="text-slate-700 dark:text-zinc-300 line-clamp-2">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {project.features.length > 3 && (
+                    <button
+                      type="button"
+                      onClick={() => onOpenProject(project)}
+                      className="text-[11px] font-mono text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:underline flex items-center gap-1 font-semibold pt-1 transition-colors cursor-pointer"
+                    >
+                      <span>+ {project.features.length - 3} more features</span>
+                      <span className="text-[10px] text-zinc-500 dark:text-zinc-400">(click to view all)</span>
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {/* PROJECT INFO & Tech Icons (Sequential Pop-in Animation Matching Video) */}
+              <div
+                style={{ animationDelay: "360ms" }}
+                className={`pt-2 ${isInView ? "animate-project-text" : "opacity-0"}`}
+              >
+                <div className="text-xs font-bold font-mono tracking-wider text-slate-800 dark:text-zinc-200 uppercase">
+                  PROJECT INFO
+                </div>
+
+                {/* Technology Row with Sequential Pop-in Tech Icons */}
+                <div className="flex flex-wrap items-center gap-2 mt-2">
+                  <span className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-zinc-300 mr-1">
+                    Technology:
+                  </span>
+
+                  {techList.map((tech, idx) => (
+                    <div
+                      key={idx}
+                      style={{ animationDelay: `${380 + idx * 45}ms` }}
+                      className={isInView ? "animate-project-icon" : "opacity-0"}
+                    >
+                      <TechIcon icon={tech} size={22} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Dashed horizontal divider */}
+              <div className="border-b border-dashed border-purple-500/30 w-full pt-1" />
+
+              {/* Action Buttons: Live site, Frontend, Backend, Github */}
+              <div
+                style={{ animationDelay: "480ms" }}
+                className={`flex items-center flex-wrap gap-2.5 pt-2 ${
+                  isInView ? "animate-project-text" : "opacity-0"
+                }`}
+              >
+                {/* Live site button */}
+                {project.liveUrl && (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white !text-white font-bold text-xs sm:text-sm shadow-sm transition-all duration-300 hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer hover:shadow-[0_0_15px_rgba(168,85,247,0.35)]"
+                  >
+                    <span className="text-white !text-white">Live site</span>
+                    <Globe className="w-3.5 h-3.5 text-white !text-white shrink-0" />
+                  </a>
+                )}
+
+                {/* Frontend Repo */}
+                {project.githubFrontend && (
+                  <a
+                    href={project.githubFrontend}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 dark:bg-[#120f26] border-2 border-slate-700 dark:border-purple-500/80 text-white !text-white font-bold text-xs sm:text-sm hover:bg-slate-800 dark:hover:bg-purple-900/40 hover:scale-105 transition-all duration-300 whitespace-nowrap shadow-sm cursor-pointer hover:shadow-[0_0_12px_rgba(56,189,248,0.2)]"
+                    title="Frontend Repository"
+                  >
+                    <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                    <span className="text-white !text-white">Frontend</span>
+                  </a>
+                )}
+
+                {/* Backend Repo */}
+                {project.githubBackend && (
+                  <a
+                    href={project.githubBackend}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 dark:bg-[#120f26] border-2 border-slate-700 dark:border-purple-500/80 text-white !text-white font-bold text-xs sm:text-sm hover:bg-slate-800 dark:hover:bg-purple-900/40 hover:scale-105 transition-all duration-300 whitespace-nowrap shadow-sm cursor-pointer hover:shadow-[0_0_12px_rgba(16,185,129,0.2)]"
+                    title="Backend Repository"
+                  >
+                    <Server className="w-3.5 h-3.5 text-emerald-400" />
+                    <span className="text-white !text-white">Backend</span>
+                  </a>
+                )}
+
+                {/* General Github Repo */}
+                {project.githubUrl && !project.githubFrontend && !project.githubBackend && (
+                  <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 dark:bg-[#120f26] border-2 border-slate-700 dark:border-purple-500/90 text-white !text-white font-bold text-xs sm:text-sm hover:bg-slate-800 dark:hover:bg-purple-900/40 hover:scale-105 transition-all duration-300 whitespace-nowrap shadow-sm cursor-pointer hover:shadow-[0_0_12px_rgba(168,85,247,0.2)]"
+                  >
+                    <span className="text-white !text-white">Github</span>
+                    <GithubIcon className="w-3.5 h-3.5 text-purple-300" />
+                  </a>
+                )}
+
+                {/* Fallback Github link */}
+                {!project.githubUrl && !project.githubFrontend && !project.githubBackend && (
+                  <a
+                    href="https://github.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 dark:bg-[#120f26] border-2 border-slate-700 dark:border-purple-500/90 text-white !text-white font-bold text-xs sm:text-sm hover:bg-slate-800 dark:hover:bg-purple-900/40 hover:scale-105 transition-all duration-300 whitespace-nowrap shadow-sm cursor-pointer hover:shadow-[0_0_12px_rgba(168,85,247,0.2)]"
+                  >
+                    <span className="text-white !text-white">Github</span>
+                    <GithubIcon className="w-3.5 h-3.5 text-purple-300" />
+                  </a>
+                )}
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ProjectsSection({ isAllPage = false }: { isAllPage?: boolean }) {
-  const [projects, setProjects] = useState<ProjectItem[]>([]);
+  const [projects, setProjects] = useState<ProjectItem[]>(DEFAULT_PROJECTS);
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+
+  // Section Header Observer
+  const headerRef = useRef<HTMLDivElement>(null);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(false);
+
+  // Footer Button Observer
+  const footerBtnRef = useRef<HTMLDivElement>(null);
+  const [isFooterBtnVisible, setIsFooterBtnVisible] = useState(false);
 
   useEffect(() => {
     const url = isAllPage ? "/api/projects" : "/api/projects?featured=true&limit=4";
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        if (Array.isArray(data)) {
+        if (Array.isArray(data) && data.length > 0) {
           setProjects(data);
         }
       })
       .catch((err) => console.error("Error fetching projects:", err));
+  }, [isAllPage]);
+
+  // Section Header Observer
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      setIsHeaderVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsHeaderVisible(true);
+          } else {
+            setIsHeaderVisible(false);
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "0px 0px -20px 0px",
+      }
+    );
+
+    const el = headerRef.current;
+    if (el) observer.observe(el);
+
+    return () => {
+      if (el) observer.unobserve(el);
+    };
+  }, []);
+
+  // Footer Button Observer
+  useEffect(() => {
+    if (typeof window === "undefined" || isAllPage) return;
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      setIsFooterBtnVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsFooterBtnVisible(true);
+          } else {
+            setIsFooterBtnVisible(false);
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "0px 0px -20px 0px",
+      }
+    );
+
+    const el = footerBtnRef.current;
+    if (el) observer.observe(el);
+
+    return () => {
+      if (el) observer.unobserve(el);
+    };
   }, [isAllPage]);
 
   // Open modal and reset slide to 0
@@ -143,11 +638,22 @@ export default function ProjectsSection({ isAllPage = false }: { isAllPage?: boo
   }, [selectedProject, modalImages.length]);
 
   return (
-    <section id="projects" className="relative py-20 pb-28 sm:pb-20 scroll-mt-20 bg-slate-50 dark:bg-[#070612] text-slate-900 dark:text-white border-b border-slate-200 dark:border-zinc-800/80 transition-colors duration-300">
+    <section
+      id="projects"
+      className="relative py-20 pb-28 sm:pb-20 scroll-mt-20 bg-slate-50 dark:bg-[#070612] text-slate-900 dark:text-white border-b border-slate-200 dark:border-zinc-800/80 transition-colors duration-300"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* SECTION HEADER */}
-        <div className="flex items-center justify-center mb-12">
+        {/* SECTION HEADER (Reveals First) */}
+        <div
+          ref={headerRef}
+          style={{
+            animationDelay: "50ms",
+          }}
+          className={`flex items-center justify-center mb-12 ${
+            isHeaderVisible ? "animate-project-header" : "opacity-0"
+          }`}
+        >
           <div className="flex items-center gap-3 text-2xl sm:text-3xl font-extrabold tracking-wider text-slate-900 dark:text-white uppercase">
             <FolderGit2 className="w-7 h-7 sm:w-8 sm:h-8 text-slate-900 dark:text-white" />
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-wider uppercase">
@@ -156,202 +662,30 @@ export default function ProjectsSection({ isAllPage = false }: { isAllPage?: boo
           </div>
         </div>
 
-        {/* PROJECTS LIST (WITH FLOWING BORDER BEAM HOVER EFFECT) */}
+        {/* PROJECTS LIST (Each Card reveals its image and description progressively as it enters viewport) */}
         <div className="space-y-10 max-w-6xl mx-auto">
-          {projects.map((project) => (
-            <div
-              key={project._id}
-              className="group relative rounded-3xl p-[1.5px] overflow-hidden transition-all duration-300 hover:scale-[1.005] bg-gradient-to-r from-purple-500/20 via-transparent to-pink-500/20 hover:from-purple-500/60 hover:to-pink-500/60 shadow-xl"
-            >
-              {/* Flowing Border Beam on Hover */}
-              <div
-                className="absolute -inset-[150%] opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 will-change-transform"
-                style={{
-                  background: `conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 270deg, #c084fc 315deg, #ffffff 352deg, #9333ea 360deg)`,
-                  animation: "borderBeam 3.5s linear infinite",
-                }}
-              />
-
-              {/* Inner Card Container */}
-              <div className="relative z-10 rounded-[calc(1.5rem-1.5px)] bg-white dark:bg-[#0c0d16] p-6 sm:p-8 md:p-10 border border-slate-200 dark:border-purple-950/60">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
-
-                  {/* LEFT COLUMN: Project Screenshot / Mockup (Like Before: Cover View) */}
-                  <div className="lg:col-span-6 flex items-center justify-center w-full">
-                    <div
-                      onClick={() => handleOpenProject(project)}
-                      className="relative w-full h-64 sm:h-72 md:h-80 rounded-2xl overflow-hidden bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 shadow-xl cursor-pointer group/img transition-all duration-300 hover:border-purple-400"
-                    >
-                      <SafeProjectImage
-                        src={project.image}
-                        alt={project.title}
-                        fill
-                        objectFit="cover"
-                        className="p-1 transition-transform duration-500 group-hover/img:scale-105"
-                      />
-
-                      {/* Click overlay pill */}
-                      <div className="absolute bottom-3 right-3 px-3 py-1 rounded-full bg-slate-900/80 dark:bg-zinc-950/80 backdrop-blur-md border border-slate-700/80 dark:border-zinc-700/80 text-[11px] font-mono text-white group-hover/img:border-purple-400 transition-colors flex items-center gap-1.5 z-10 shadow-lg">
-                        <Maximize2 className="w-3 h-3 text-purple-300" />
-                        <span>Click to Expand</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* RIGHT COLUMN: Project Details & Tech Stack */}
-                  <div className="lg:col-span-6 flex flex-col justify-between space-y-4">
-
-                    {/* Title */}
-                    <h3
-                      onClick={() => handleOpenProject(project)}
-                      className="text-2xl sm:text-3xl font-extrabold text-purple-700 dark:text-[#c084fc] hover:text-purple-600 dark:hover:text-purple-300 transition-colors cursor-pointer tracking-tight"
-                    >
-                      {project.title}
-                    </h3>
-
-                    {/* Short Description */}
-                    <p className="text-slate-600 dark:text-zinc-300 text-xs sm:text-sm leading-relaxed">
-                      {project.shortDescription}
-                    </p>
-
-                    {/* Key Highlights (Top 3 on initial card view) */}
-                    {project.features && project.features.length > 0 && (
-                      <div className="space-y-1.5">
-                        <ul className="space-y-2 text-xs sm:text-sm text-slate-700 dark:text-zinc-300">
-                          {project.features.slice(0, 3).map((feature, i) => (
-                            <li key={i} className="flex items-start gap-2.5">
-                              <span className="text-purple-600 dark:text-purple-400 font-bold text-base leading-none mt-0.5">•</span>
-                              <span className="text-slate-700 dark:text-zinc-300 line-clamp-2">{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
-
-                        {project.features.length > 3 && (
-                          <button
-                            type="button"
-                            onClick={() => setSelectedProject(project)}
-                            className="text-[11px] font-mono text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:underline flex items-center gap-1 font-semibold pt-1 transition-colors cursor-pointer"
-                          >
-                            <span>+ {project.features.length - 3} more features</span>
-                            <span className="text-[10px] text-zinc-500 dark:text-zinc-400">(click to view all)</span>
-                          </button>
-                        )}
-                      </div>
-                    )}
-
-                    {/* PROJECT INFO Header */}
-                    <div className="pt-2">
-                      <div className="text-xs font-bold font-mono tracking-wider text-slate-800 dark:text-zinc-200 uppercase">
-                        PROJECT INFO
-                      </div>
-
-                      {/* Technology Row (Icons from Backend) */}
-                      <div className="flex flex-wrap items-center gap-2 mt-2">
-                        <span className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-zinc-300 mr-1">
-                          Technology:
-                        </span>
-
-                        {/* Render backend icon array */}
-                        {project.icons && project.icons.length > 0 ? (
-                          project.icons.map((icon, idx) => (
-                            <TechIcon key={idx} icon={icon} size={22} />
-                          ))
-                        ) : (
-                          // Fallback to frontendTech / backendTech list if icons not specified
-                          project.frontendTech?.concat(project.backendTech || []).map((tech, idx) => (
-                            <TechIcon key={idx} icon={tech} size={22} />
-                          ))
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Dashed horizontal divider */}
-                    <div className="border-b border-dashed border-purple-500/30 w-full pt-1" />
-
-                    {/* Action Buttons: Live site, Frontend, Backend, Github */}
-                    <div className="flex items-center flex-wrap gap-2.5 pt-2">
-                      {/* Live site button */}
-                      {project.liveUrl && (
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white !text-white font-bold text-xs sm:text-sm shadow-sm transition-all hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer"
-                        >
-                          <span className="text-white !text-white">Live site</span>
-                          <Globe className="w-3.5 h-3.5 text-white !text-white shrink-0" />
-                        </a>
-                      )}
-
-                      {/* Frontend Repo */}
-                      {project.githubFrontend && (
-                        <a
-                          href={project.githubFrontend}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 dark:bg-[#120f26] border-2 border-slate-700 dark:border-purple-500/80 text-white !text-white font-bold text-xs sm:text-sm hover:bg-slate-800 dark:hover:bg-purple-900/40 hover:scale-105 transition-all whitespace-nowrap shadow-sm cursor-pointer"
-                          title="Frontend Repository"
-                        >
-                          <Code2 className="w-3.5 h-3.5 text-cyan-400" />
-                          <span className="text-white !text-white">Frontend</span>
-                        </a>
-                      )}
-
-                      {/* Backend Repo */}
-                      {project.githubBackend && (
-                        <a
-                          href={project.githubBackend}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 dark:bg-[#120f26] border-2 border-slate-700 dark:border-purple-500/80 text-white !text-white font-bold text-xs sm:text-sm hover:bg-slate-800 dark:hover:bg-purple-900/40 hover:scale-105 transition-all whitespace-nowrap shadow-sm cursor-pointer"
-                          title="Backend Repository"
-                        >
-                          <Server className="w-3.5 h-3.5 text-emerald-400" />
-                          <span className="text-white !text-white">Backend</span>
-                        </a>
-                      )}
-
-                      {/* General Github Repo (shown if neither frontend nor backend specified, OR if provided) */}
-                      {project.githubUrl && !project.githubFrontend && !project.githubBackend && (
-                        <a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 dark:bg-[#120f26] border-2 border-slate-700 dark:border-purple-500/90 text-white !text-white font-bold text-xs sm:text-sm hover:bg-slate-800 dark:hover:bg-purple-900/40 hover:scale-105 transition-all whitespace-nowrap shadow-sm cursor-pointer"
-                        >
-                          <span className="text-white !text-white">Github</span>
-                          <GithubIcon className="w-3.5 h-3.5 text-purple-300" />
-                        </a>
-                      )}
-
-                      {/* Fallback Github link if none provided at all */}
-                      {!project.githubUrl && !project.githubFrontend && !project.githubBackend && (
-                        <a
-                          href="https://github.com"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 dark:bg-[#120f26] border-2 border-slate-700 dark:border-purple-500/90 text-white !text-white font-bold text-xs sm:text-sm hover:bg-slate-800 dark:hover:bg-purple-900/40 hover:scale-105 transition-all whitespace-nowrap shadow-sm cursor-pointer"
-                        >
-                          <span className="text-white !text-white">Github</span>
-                          <GithubIcon className="w-3.5 h-3.5 text-purple-300" />
-                        </a>
-                      )}
-                    </div>
-
-                  </div>
-
-                </div>
-              </div>
-            </div>
+          {projects.map((project, index) => (
+            <ProjectCardItem
+              key={project._id || index}
+              project={project}
+              index={index}
+              onOpenProject={handleOpenProject}
+            />
           ))}
         </div>
 
         {/* VIEW ALL PROJECTS BUTTON (ON HOME PAGE ONLY - MATCHING SCREENSHOT) */}
         {!isAllPage && (
-          <div className="mt-14 text-center">
+          <div
+            ref={footerBtnRef}
+            style={{
+              animationDelay: "150ms",
+            }}
+            className={`mt-14 text-center ${isFooterBtnVisible ? "animate-project-header" : "opacity-0"}`}
+          >
             <Link
               href="/projects"
-              className="inline-flex items-center gap-2 px-8 py-3 rounded-2xl border-2 border-purple-500/80 bg-purple-100 hover:bg-purple-600 text-purple-900 hover:text-white dark:bg-purple-950/40 dark:text-purple-300 dark:hover:bg-purple-600 dark:hover:text-white font-bold text-sm shadow-[0_2px_16px_rgba(168,85,247,0.25)] transition-all hover:scale-105 cursor-pointer"
+              className="inline-flex items-center gap-2 px-8 py-3 rounded-2xl border-2 border-purple-500/80 bg-purple-100 hover:bg-purple-600 text-purple-900 hover:text-white dark:bg-purple-950/40 dark:text-purple-300 dark:hover:bg-purple-600 dark:hover:text-white font-bold text-sm shadow-[0_2px_16px_rgba(168,85,247,0.25)] transition-all duration-300 hover:scale-105 hover:shadow-[0_4px_24px_rgba(168,85,247,0.4)] active:scale-95 cursor-pointer"
             >
               <span className="font-bold">All Projects</span>
               <ChevronRight className="w-4 h-4 text-purple-600 dark:text-purple-400" />
